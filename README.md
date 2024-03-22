@@ -1,6 +1,7 @@
 # SGI-IMOBILIÁRIA
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Este projeto é um Frontend construido em ReactJS para o Projeto Integrador V.
+O objetivo é construir um client para consumir uma API de cadastros relacionados a regras de negócio de uma imobiliária.
 
 ## Available Scripts
 
