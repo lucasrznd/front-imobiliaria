@@ -37,6 +37,9 @@ export default function CadastroLocatario() {
     function novoLocatarioAction() {
         setLocatario(new LocatarioModel());
         setDetalhesVisible(true);
+        setNomeInvalido(false);
+        setTelefoneInvalido(false);
+        setEmailInvalido(false);
     }
 
     function buscaLocatarioAction() {
