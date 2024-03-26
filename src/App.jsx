@@ -1,6 +1,6 @@
 import './App.css';
 import CadastroLocatario from './pages/Locatario';
-import 'primereact/resources/themes/lara-light-teal/theme.css';
+import 'primereact/resources/themes/lara-light-green/theme.css';
 import 'primeicons/primeicons.css';
 
 function App() {
