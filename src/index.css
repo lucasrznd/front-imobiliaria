@@ -14,10 +14,3 @@ code {
 html {
   font-size: 15px;
 }
-
-/* Estilo para o paginador */
-.p-paginator .p-paginator-current,
-.p-paginator .p-paginator-pages,
-.p-paginator .p-paginator-page {
-    color: #4b4f56; 
-}
