@@ -4,7 +4,7 @@ export default function Rodape() {
             display: "flex",
             alignItems: "center",
             justifyContent:  "center",
-            backgroundColor: "#406d48",
+            backgroundColor: "#069669",
             color: "white",
             height: "60px",
             borderRadius: "5px",
