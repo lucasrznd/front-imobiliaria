@@ -139,10 +139,6 @@ export default function CadastroParcela() {
         }
     }
 
-    const handleChangeData = (ev) => {
-        setParcela({ ...parcela, dataInicio: ev.target.value });
-    }
-
     const rodapeModal = (
         <div>
             <Button label="Salvar" icon="pi pi-check" onClick={salvarParcelaAction} autoFocus />
@@ -197,13 +193,13 @@ export default function CadastroParcela() {
 
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
                             <label htmlFor='dataInicio' style={{ marginBottom: '0.5rem' }}>Data de Início:</label>
-                            <Calendar id="dataInicio" value={new Date(parcela.dataInicio)} onChange={handleChangeData} style={{ width: '300px' }} showIcon dateFormat="dd/mm/yy" locale="pt-BR" />
+                            <Calendar id="dataInicio" value={parcela.dataInicio} onChange={(e) => setParcela({ ...parcela, dataInicio: e.value })} style={{ width: '300px' }} showIcon dateFormat="dd/mm/yy" locale="pt-BR" />
                         </div>
-                        {/* 
+
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
                             <label htmlFor='dataVencimento' style={{ marginBottom: '0.5rem' }}>Data de Vencimento:</label>
                             <Calendar id="dataVencimento" value={parcela.dataVencimento} onChange={(e) => setParcela({ ...parcela, dataVencimento: e.value })} style={{ width: '300px' }} showIcon dateFormat="dd/mm/yy" />
-                        </div> */}
+                        </div>
                     </div>
                 </Dialog>
 
