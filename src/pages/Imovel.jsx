@@ -13,14 +13,13 @@ import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { AutoComplete } from "primereact/autocomplete";
 import { InputNumber } from "primereact/inputnumber";
-import { Calendar } from "primereact/calendar";
 import { EnderecoModel } from "../models/EnderecoModel";
 
 export default function CadastroImovel() {
     const [imovel, setImovel] = useState(new ImovelModel());
     const [imoveis, setImoveis] = useState([
         {
-            id: 1, titulo: 'Casa', descricao: 'Casa grande, dois andares, dois banheiros, 3 quartos.', proprietario: 'Guilherme', valorTotal: 2000, disponibilidadeTempo: 6, ativo: 'Sim'
+            id: 1, titulo: 'Casa', descricao: 'Casa grande, dois andares, dois banheiros, 3 quartos.', proprietario: 'Guilherme', endereco: { rua: 'Avenida Aguiar' }, valorTotal: 2000, disponibilidadeTempo: 6, ativo: true
         }
     ]);
     const [endereco, setEndereco] = useState(new EnderecoModel());
@@ -50,6 +49,7 @@ export default function CadastroImovel() {
 
     function buscaImovelAction() {
         setImovel(new ImovelModel());
+        setEndereco(new EnderecoModel());
         setBuscarVisible(true);
     }
 
@@ -107,7 +107,7 @@ export default function CadastroImovel() {
     }
 
     const buscarImovelAction = () => {
-        console.log('Buscando imóvel: ' + imovel.nome);
+        console.log('Buscando imóvel: ' + imovel.titulo);
         setBuscarVisible(false);
     }
 
@@ -136,6 +136,15 @@ export default function CadastroImovel() {
             <Button label="Cancelar" icon="pi pi-times" outlined onClick={fecharBusca} />
         </div>
     );
+
+    function formatarStatus(rowData) {
+        if (rowData && rowData.ativo) {
+            if (rowData.ativo === true) {
+                return 'Sim';
+            }
+        }
+        return 'Não';
+    }
 
     const changeEnderecoRua = (ev) => {
         setEndereco({ ...endereco, rua: ev.target.value });
@@ -178,7 +187,7 @@ export default function CadastroImovel() {
                             <Column field="endereco.rua" header="Endereço" align="center" alignHeader="center" />
                             <Column field="valorTotal" header="Valor Total" align="center" alignHeader="center" />
                             <Column field="disponibilidadeTempo" header="Disponibilidade (meses)" align="center" alignHeader="center" />
-                            <Column field="ativo" header="Ativo" align="center" alignHeader="center" />
+                            <Column field="ativo" header="Ativo" body={formatarStatus} align="center" alignHeader="center" />
                             <Column body={acoesDataTable} exportable={false} style={{ minWidth: '12rem' }} align="center" header="Ações" alignHeader="center" />
                         </DataTable>
                     </div>
@@ -239,6 +248,20 @@ export default function CadastroImovel() {
                                 <label htmlFor='cidade' style={{ marginBottom: '0.5rem' }}>Cidade:</label>
                                 <InputText id="cidade" value={endereco.cidade} onChange={changeEnderecoCidade} style={{ width: '100%' }} />
                             </div>
+                        </div>
+                    </div>
+                </Dialog>
+
+                <Dialog header="Buscar Imóvel" visible={buscarVisible} style={{ width: '30vw', minWidth: "30vw" }} onHide={() => setDetalhesVisible(false)}
+                    footer={rodapeModalBuscar} draggable={false}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                            <label htmlFor='nome' style={{ marginBottom: '0.5rem' }}>Nome:</label>
+                            <InputText id="nome" value={imovel.titulo} onChange={(e) => setImovel({ ...imovel, titulo: e.target.value })} style={{ width: '300px' }} />
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                            <label htmlFor='proprietario' style={{ marginBottom: '0.5rem' }}>Proprietário:</label>
+                            <AutoComplete value={imovel.proprietario} suggestions={items} completeMethod={buscaAutocomplete} onChange={(e) => setImovel({ ...imovel, proprietario: e.target.value })} size={23} />
                         </div>
                     </div>
                 </Dialog>
