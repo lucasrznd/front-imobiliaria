@@ -1,12 +1,12 @@
 import './App.css';
 import 'primereact/resources/themes/lara-light-green/theme.css';
 import 'primeicons/primeicons.css';
-import CadastroImovel from './pages/Imovel';
+import CadastroParcela from './pages/Parcela';
 
 function App() {
   return (
     <div>
-      <CadastroImovel />
+      <CadastroParcela />
     </div>
   );
 }
