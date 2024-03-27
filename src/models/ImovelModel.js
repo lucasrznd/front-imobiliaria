@@ -1,6 +1,6 @@
 export class ImovelModel {
 
-    constructor(id, titulo, descricao, proprietario, endereco, valorTotal, disponibilidadeTempo) {
+    constructor(id, titulo, descricao, proprietario, endereco, valorTotal, disponibilidadeTempo, status) {
         this.id = id
         this.titulo = titulo
         this.descricao = descricao
@@ -8,6 +8,7 @@ export class ImovelModel {
         this.endereco = endereco
         this.valorTotal = valorTotal
         this.disponibilidadeTempo = disponibilidadeTempo
+        this.status = status
     }
 
 }
