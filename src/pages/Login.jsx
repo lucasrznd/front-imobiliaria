@@ -4,7 +4,7 @@ import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 import { useState } from "react";
-import logo from './../assets/images/logo.png';
+import logo from './../assets/images/logo-sgi.png';
 import retangulo from './../assets/images/retangulo1.png'
 import homem from './../assets/images/homem.png'
 import luminaria from './../assets/images/luminaria.png'
