@@ -1,12 +1,13 @@
 import './App.css';
 import 'primereact/resources/themes/lara-light-green/theme.css';
 import 'primeicons/primeicons.css';
-import CadastroParcela from './pages/Parcela';
+import '/node_modules/primeflex/primeflex.css';
+import AppRoutes from './routes/Routes';
 
 function App() {
   return (
     <div>
-      <CadastroParcela />
+      <AppRoutes />
     </div>
   );
 }
