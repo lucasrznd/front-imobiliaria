@@ -19,8 +19,9 @@ body{
 }
 
 .retangulo{
-    height: 700px;
+    height:100%;
     transform: rotateY(180deg);
+    position: absolute;
 }
 
 .imagem{
@@ -34,4 +35,19 @@ button{
 
 .senha{
     margin-top: 20px;
+    margin-bottom: 0.5rem;
+}
+
+.homem{
+    height: 50%;
+    margin-top: 10%;
+    margin-left: 10%;
+    position: absolute;
+    transform: rotateY(180deg);
+}
+
+.luminaria{
+    position: absolute;
+    margin-left: 45%;
+    height: 25%;
 }

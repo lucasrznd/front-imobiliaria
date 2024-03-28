@@ -6,6 +6,8 @@ import { Button } from 'primereact/button';
 import { useState } from "react";
 import logo from './../assets/images/logo.png';
 import retangulo from './../assets/images/Rectangle 1.png'
+import homem from './../assets/images/homem.png'
+import luminaria from './../assets/images/luminaria.png'
 
 export default function Login(){
     const [value, setValue] = useState('');
@@ -15,7 +17,9 @@ export default function Login(){
             <div className="fundo">
                 <div className="blocoum">
                     <div>
+                        <img className="luminaria" src={luminaria} alt="" />
                         <img className="retangulo" src={retangulo} alt="" />
+                        <img className="homem" src={homem} alt="" />
                     </div>
                 </div>
                 <div className="blocodois">
