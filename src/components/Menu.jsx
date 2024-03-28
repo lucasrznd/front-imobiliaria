@@ -2,7 +2,7 @@
 import React from 'react';
 import { Menubar } from 'primereact/menubar';
 import { Badge } from 'primereact/badge';
-import logo from '../../src/assets/images/logo-sgi.png';
+import logo from '../../src/assets/images/logo.png';
 
 export default function MenuApp() {
     const itemRenderer = (item) => (
