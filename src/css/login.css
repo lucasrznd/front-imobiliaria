@@ -1,44 +1,45 @@
-body{
+body {
     background-color: white;
     overflow: hidden;
 }
 
-.blocoum{
+.blocoum {
     width: 60%;
     min-height: 100%;
     background-color: #069669;
 }
-.blocodois{
+
+.blocodois {
     margin-top: 8%;
     margin-left: 12%;
 }
 
-.fundo{
+.fundo {
     display: flex;
     min-height: 100vh;
 }
 
-.retangulo{
-    height:100%;
+.retangulo {
+    height: 100%;
     transform: rotateY(180deg);
     position: absolute;
 }
 
-.imagem{
+.imagem {
     height: 150px;
 }
 
-button{
+button {
     width: 300px;
     margin-top: 30px;
 }
 
-.senha{
+.senha {
     margin-top: 20px;
     margin-bottom: 0.5rem;
 }
 
-.homem{
+.homem {
     height: 50%;
     margin-top: 10%;
     margin-left: 10%;
@@ -46,7 +47,7 @@ button{
     transform: rotateY(180deg);
 }
 
-.luminaria{
+.luminaria {
     position: absolute;
     margin-left: 45%;
     height: 25%;
