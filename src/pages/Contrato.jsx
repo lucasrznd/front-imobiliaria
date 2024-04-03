@@ -102,11 +102,11 @@ export default function CadastroContrato() {
         setDetalhesVisible(false);
         console.log(contrato);
         contratos.push(contrato);
-        msgSucesso('Imóvel cadastrado com sucesso.');
+        msgSucesso('Contrato cadastrado com sucesso.');
     }
 
     const buscarContratoAction = () => {
-        console.log('Buscando imóvel: ' + contrato.titulo);
+        console.log('Buscando contrato: ' + contrato.imovel);
         setBuscarVisible(false);
     }
 
@@ -218,8 +218,8 @@ export default function CadastroContrato() {
 
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                            <label htmlFor='Contrato' style={{ marginBottom: '0.5rem' }}>Imóvel:</label>
-                            <AutoComplete id="Contrato" value={contrato.imovel} suggestions={items} completeMethod={buscaAutocomplete} onChange={(e) => setContrato({ ...contrato, imovel: e.target.value })} style={{ width: '100%' }} />
+                            <label htmlFor='contrato' style={{ marginBottom: '0.5rem' }}>Imóvel:</label>
+                            <AutoComplete id="contrato" value={contrato.imovel} suggestions={items} completeMethod={buscaAutocomplete} onChange={(e) => setContrato({ ...contrato, imovel: e.target.value })} style={{ width: '100%' }} />
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
