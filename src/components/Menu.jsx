@@ -36,6 +36,7 @@ export default function MenuApp() {
         {
             label: 'Contrato',
             icon: 'pi pi-file',
+            url: '/contrato'
         }
     ];
 
