@@ -1,71 +1,38 @@
-# SGI-IMOBILIÁRIA
+# Sistema Gerenciador de Imóveis (SGI)
 
-Este projeto é um Frontend construido em ReactJS para o Projeto Integrador V.
-O objetivo é construir um client para consumir uma API de cadastros relacionados a regras de negócio de uma imobiliária.
+O Sistema Gerenciador de Imóveis (SGI) é uma aplicação frontend desenvolvida em ReactJS para auxiliar pequenas imobiliárias no gerenciamento de locatários, proprietários, imóveis, contratos e parcelas.
 
-## Available Scripts
+## Funcionalidades
 
-In the project directory, you can run:
+- Cadastro de Locatários: Registre informações sobre os locatários dos imóveis.
+- Cadastro de Proprietários: Mantenha um registro dos proprietários dos imóveis gerenciados.
+- Cadastro de Imóveis: Adicione detalhes sobre os imóveis disponíveis para locação.
+- Gestão de Contratos: Gerencie contratos de locação entre locatários e proprietários.
+- Controle de Parcelas: Acompanhe as parcelas dos contratos, incluindo datas de vencimento e status de pagamento.
 
-### `npm start`
+## Tecnologias Utilizadas
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **ReactJS**: Biblioteca JavaScript para construção de interfaces de usuário.
+- **PrimeReact**: Biblioteca de componentes prontos para React, utilizada para elementos como Inputs, menus e tabelas.
+- **PrimeFlex**: Sistema de layout flexível baseado em flexbox, para estilização CSS.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Instalação
 
-### `npm test`
+1. Clone este repositório: `git clone https://github.com/lucasrznd/front-imobiliaria.git`
+2. Navegue até o diretório do projeto: `cd app-imobiliaria`
+3. Instale as dependências: `npm install`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Uso
 
-### `npm run build`
+1. Inicie o servidor de desenvolvimento: `npm start`
+2. Abra o navegador e acesse `http://localhost:3000`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Contribuindo
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Contribuições são bem-vindas! Para contribuir com o projeto, siga estes passos:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+1. Faça um fork do repositório
+2. Crie uma branch para sua feature: `git checkout -b feature-nova`
+3. Faça commit das suas mudanças: `git commit -am 'Adiciona nova feature'`
+4. Faça push para a branch: `git push origin feature-nova`
+5. Abra um Pull Request
