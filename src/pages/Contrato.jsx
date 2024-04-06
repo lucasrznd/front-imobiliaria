@@ -37,8 +37,8 @@ export default function CadastroContrato() {
             <Button icon="pi pi-plus-circle" label='Novo' onClick={novoContratoAction} />
             <span style={{ margin: "10px" }} className="pi pi-ellipsis-v"></span>
             <Button icon="pi pi-search" label="Buscar" onClick={buscaContratoAction} />
-            <span style={{ margin: "10px" }} className="pi pi-ellipsis-v"></span>
-            <Button icon="pi pi-credit-card" label="Parcelas" onClick={buscaContratoAction} />
+            {/* <span style={{ margin: "10px" }} className="pi pi-ellipsis-v"></span>
+            <Button icon="pi pi-credit-card" label="Parcelas" onClick={buscaContratoAction} /> */}
         </React.Fragment>
     );
 
