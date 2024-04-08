@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Menubar } from 'primereact/menubar';
 import { Badge } from 'primereact/badge';
@@ -15,24 +14,33 @@ export default function MenuApp() {
     );
     const items = [
         {
+            label: 'Imóvel',
+            icon: 'pi pi-building',
+            url: '/imovel'
+        },
+        {
+            label: 'Parcela',
+            icon: 'pi pi-wallet',
+            url: '/parcela'
+        },
+        {
             label: 'Locatário',
-            icon: 'pi pi-user'
+            icon: 'pi pi-user',
+            url: '/locatario'
         },
         {
             label: 'Proprietário',
-            icon: 'pi pi-user'
-        },
-        {
-            label: 'Imóvel',
-            icon: 'pi pi-building',
+            icon: 'pi pi-user',
+            url: '/proprietario'
         },
         {
             label: 'Contrato',
             icon: 'pi pi-file',
+            url: '/contrato'
         }
     ];
 
-    const start = <img alt="logos" src={logo} height={60} className="mr-2" />;
+    const start = <a href='/'><img alt="logos" src={logo} height={60} className="mr-2" /></a>
 
     return (
         <div className="card">
