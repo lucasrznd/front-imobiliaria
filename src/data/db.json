@@ -1,0 +1,16 @@
+{
+    "locatario": [
+        {
+            "id": 1,
+            "nome": "Lucas Ferreira",
+            "telefone": "43999999999",
+            "email": "lucas@gmail.com"
+        },
+        {
+            "id": 2,
+            "nome": "João Augusto",
+            "telefone": "43988888888",
+            "email": "joao@gmail.com"
+        }
+    ]
+}
