@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { ProprietarioModel } from "../models/ProprietarioModel"
 import { Button } from "primereact/button";
 import MenuApp from "../components/Menu";
@@ -12,12 +12,12 @@ import { InputText } from "primereact/inputtext";
 import { InputMask } from "primereact/inputmask";
 import { Checkbox } from "primereact/checkbox";
 import Rodape from "../components/Rodape";
+import { ProprietarioService } from "../services/ProprietarioService";
 
 export default function CadastroProprietario() {
     const [proprietario, setProprietario] = useState(new ProprietarioModel());
-    const [proprietarios, setProprietarios] = useState([
-        { id: 1, nome: "Guilherme", telefone: "(43) 9 9999-9999", ativo: true },
-    ]);
+    const [proprietarios, setProprietarios] = useState([]);
+    const proprietarioService = new ProprietarioService();
 
     const [nomeInvalido, setNomeInvalido] = useState(false);
     const [telefoneInvalido, setTelefoneInvalido] = useState(false);
@@ -70,11 +70,10 @@ export default function CadastroProprietario() {
         setBuscarVisible(false);
     }
 
-    const deletarProprietario = () => {
-        const novaLista = proprietarios.filter(p => p.nome !== proprietario.nome);
-        setProprietarios(novaLista);
+    const deletarProprietario = async () => {
+        await excluirProprietario();
+        await listarProprietarios();
         setDeleteProprietarioDialog(false);
-        msgAviso('Proprietário removido com sucesso.');
     }
 
     const confirmDeleteProprietario = (proprietario) => {
@@ -96,13 +95,13 @@ export default function CadastroProprietario() {
     const salvarProprietarioAction = () => {
         if (validarNome() && validarTelefone() && validarStatus()) {
             setDetalhesVisible(false);
-            proprietarios.push(proprietario);
-            msgSucesso('Proprietário cadastrado com sucesso.')
+            salvarProprietario();
+            msgSucesso('Proprietário salvo com sucesso.');
         }
     }
 
-    const buscarProprietarioAction = () => {
-        console.log('Buscando proprietário: ' + proprietario.nome);
+    const buscarProprietarioAction = async () => {
+        await buscarProprietarioPorId();
         setBuscarVisible(false);
     }
 
@@ -172,7 +171,47 @@ export default function CadastroProprietario() {
             <Button label="Buscar" icon="pi pi-check" onClick={buscarProprietarioAction} autoFocus />
             <Button label="Cancelar" icon="pi pi-times" outlined onClick={fecharBusca} />
         </div>
-    )
+    );
+
+    const listarProprietarios = async () => {
+        try {
+            const response = await proprietarioService.listarTodos();
+            setProprietarios(response.data);
+        } catch (error) {
+            msgErro('Erro ao carregar proprietários.')
+        }
+    }
+
+    const buscarProprietarioPorId = async () => {
+        try {
+            const response = await proprietarioService.buscarPorId(proprietario.id);
+            setProprietarios([response.data]);
+            setProprietario(new ProprietarioModel());
+        } catch (error) {
+            msgErro('Erro ao buscar proprietário.');
+        }
+    }
+
+    const salvarProprietario = async () => {
+        if (proprietario.id === undefined) {
+            await proprietarioService.salvar(proprietario);
+            await listarProprietarios();
+            setProprietario(new ProprietarioModel());
+        } else {
+            await proprietarioService.editar(proprietario);
+            await listarProprietarios();
+            setProprietario(new ProprietarioModel());
+        }
+    }
+
+    const excluirProprietario = async () => {
+        await proprietarioService.excluir(proprietario.id);
+        msgAviso('Proprietário removido com sucesso.');
+    }
+
+    useEffect(() => {
+        listarProprietarios();
+    }, []);
 
     return (
         <div>
@@ -224,8 +263,8 @@ export default function CadastroProprietario() {
                     footer={rodapeModalBuscar} draggable={false}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                            <label htmlFor='nome' style={{ marginBottom: '0.5rem' }}>Nome:</label>
-                            <InputText id="nome" value={proprietario.nome} onChange={(e) => setProprietario({ ...proprietario, nome: e.target.value })} style={{ width: '300px' }} />
+                            <label htmlFor='id' style={{ marginBottom: '0.5rem' }}>Código:</label>
+                            <InputText id="id" value={proprietario.id} onChange={(e) => setProprietario({ ...proprietario, id: e.target.value })} style={{ width: '300px' }} />
                         </div>
                     </div>
                 </Dialog>
