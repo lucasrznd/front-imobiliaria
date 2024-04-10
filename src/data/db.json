@@ -18,5 +18,19 @@
       "telefone": "(43) 9 7777-7777",
       "email": "joao@gmail.com"
     }
+  ],
+  "proprietario": [
+    {
+      "id": "a5c0",
+      "nome": "Rogério Marinke",
+      "telefone": "(43) 9 5555-5555",
+      "ativo": true
+    },
+    {
+      "id": "307a",
+      "nome": "Rodrigo Ayres",
+      "telefone": "(43) 9 4444-4444",
+      "ativo": true
+    }
   ]
 }
