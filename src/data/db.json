@@ -180,7 +180,8 @@
       },
       "valorParcela": 120,
       "dataInicio": "2024-03-06T03:00:00.000Z",
-      "dataVencimento": "2024-04-30T03:00:00.000Z"
+      "dataVencimento": "2024-04-30T03:00:00.000Z",
+      "ativa": true
     },
     {
       "id": "3b79",
@@ -219,7 +220,8 @@
       },
       "valorParcela": 300,
       "dataInicio": "2024-04-04T03:00:00.000Z",
-      "dataVencimento": "2024-04-30T03:00:00.000Z"
+      "dataVencimento": "2024-04-30T03:00:00.000Z",
+      "ativa": true
     }
   ]
 }
