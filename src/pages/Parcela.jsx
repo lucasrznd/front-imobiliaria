@@ -269,6 +269,11 @@ export default function CadastroParcela() {
                             <label htmlFor='dataVencimento' style={{ marginBottom: '0.5rem' }}>Data de Vencimento:</label>
                             <Calendar id="dataVencimento" value={new Date(parcela.dataVencimento)} onChange={(e) => setParcela({ ...parcela, dataVencimento: e.value })} style={{ width: '300px' }} showIcon dateFormat="dd/mm/yy" />
                         </div>
+
+                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                            <label htmlFor='ativa' style={{ marginBottom: '0.5rem' }}>Ativa:</label>
+                            <Checkbox id="ativa" onChange={(e) => setParcela({ ...parcela, ativa: e.checked })} checked={parcela.ativa} style={{ marginLeft: "5px" }} />
+                        </div>
                     </div>
                 </Dialog>
 
