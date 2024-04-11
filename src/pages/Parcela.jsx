@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { ParcelaModel } from "../models/ParcelaModel"
 import MenuApp from "../components/Menu";
 import { Button } from "primereact/button";
@@ -14,12 +14,20 @@ import { InputNumber } from "primereact/inputnumber";
 import { Checkbox } from "primereact/checkbox";
 import { Calendar } from "primereact/calendar";
 import { addLocale } from "primereact/api";
+import { ParcelaService } from "../services/ParcelaService";
+import { formatarData, formatarValorRealDatatable, formatarValorReal } from "../functions/funcoesFormatacao";
+import { ContratoService } from "../services/ContratoService";
+import { AutoComplete } from "primereact/autocomplete";
 
 export default function CadastroParcela() {
     const [parcela, setParcela] = useState(new ParcelaModel());
-    const [parcelas, setParcelas] = useState([
-        { id: 1, contrato: 1, valorParcela: 500, dataInicio: '01/01/2024', dataVencimento: '31/01/2024', ativa: true }
-    ]);
+    const [parcelas, setParcelas] = useState([]);
+    const parcelaService = new ParcelaService();
+
+    const [contratos, setContratos] = useState([]);
+    const [contratosFiltrados, setContratosFiltrados] = useState([]);
+    const contratoService = new ContratoService();
+
     const [detalhesVisible, setDetalhesVisible] = useState(false);
     const [buscarVisible, setBuscarVisible] = useState(false);
     const [deleteParcelaDialog, setDeleteParcelaDialog] = useState(false);
@@ -78,11 +86,10 @@ export default function CadastroParcela() {
         setBuscarVisible(false);
     }
 
-    const deletarParcela = () => {
-        const novaLista = parcelas.filter(p => p.nome !== parcela.dataInicio);
-        setParcelas(novaLista);
+    const deletarParcela = async () => {
+        await excluirParcela();
+        await listarParcelas();
         setDeleteParcelaDialog(false);
-        msgAviso('Parcela removida com sucesso.');
     }
 
     const confirmDeleteParcela = (parcela) => {
@@ -101,14 +108,14 @@ export default function CadastroParcela() {
         </React.Fragment>
     );
 
-    const salvarParcelaAction = () => {
+    const salvarParcelaAction = async () => {
+        await salvarParcela();
         setDetalhesVisible(false);
-        parcelas.push(parcela);
         msgSucesso('Parcela cadastrada com sucesso.');
     }
 
-    const buscarParcelaAction = () => {
-        console.log('Buscando parcela: ' + parcela.contrato);
+    const buscarParcelaAction = async () => {
+        await buscarParcelaPorId();
         setBuscarVisible(false);
     }
 
@@ -133,12 +140,6 @@ export default function CadastroParcela() {
         return 'Não';
     }
 
-    function formatarValor(rowData) {
-        if (rowData && rowData.valorParcela) {
-            return 'R$ ' + rowData.valorParcela + ',00';
-        }
-    }
-
     const rodapeModal = (
         <div>
             <Button label="Salvar" icon="pi pi-check" onClick={salvarParcelaAction} autoFocus />
@@ -152,6 +153,74 @@ export default function CadastroParcela() {
             <Button label="Cancelar" icon="pi pi-times" outlined onClick={fecharBusca} />
         </div>
     )
+
+    const listarContratos = async () => {
+        try {
+            const response = await contratoService.listarTodos();
+            setContratos(response.data);
+        } catch (error) {
+            msgErro('Erro ao carregar contratos');
+        }
+    }
+
+    const completeMethodImoveis = (ev) => {
+        const sugestoesFiltradas = contratos.filter(c => c.imovel.titulo.toLowerCase().includes(ev.query.toLowerCase()));
+
+        setContratosFiltrados(sugestoesFiltradas);
+
+        return sugestoesFiltradas;
+    };
+
+    const listarParcelas = async () => {
+        try {
+            const response = await parcelaService.listarTodos();
+            setParcelas(response.data);
+        } catch (error) {
+            msgErro('Erro ao carregar parcelas');
+        }
+    }
+
+    const buscarParcelaPorId = async () => {
+        try {
+            const response = await parcelaService.buscarPorId(parcela.id);
+            setParcelas([response.data]);
+            setParcela(new ParcelaModel());
+        } catch (error) {
+            msgErro('Erro ao buscar parcela.');
+        }
+    }
+
+    const salvarParcela = async () => {
+        if (parcela.id === undefined) {
+            await parcelaService.salvar(parcela);
+            await listarParcelas();
+            setParcela(new ParcelaModel());
+        } else {
+            await parcelaService.editar(parcela);
+            await listarParcelas();
+            setParcela(new ParcelaModel());
+        }
+    }
+
+    const excluirParcela = async () => {
+        await parcelaService.excluir(parcela.id);
+        msgAviso('Parcela removida com sucesso.');
+    }
+
+    useEffect(() => {
+        listarParcelas();
+        listarContratos();
+    }, []);
+
+    const customItemTemplate = (item) => {
+        return (
+            <>
+                <div>Imóvel: {item.imovel.titulo}</div>
+                <div>Locatário: {item.locatario.nome}</div>
+                <div>Valor Mensal: {formatarValorReal(item.valorMensal)}</div>
+            </>
+        );
+    };
 
     return (
         <div>
@@ -168,10 +237,10 @@ export default function CadastroParcela() {
                             paginator header="Parcelas" rows={5} emptyMessage="Nenhuma parcela encontrada."
                             key="id">
                             <Column field="id" header="Código" align="center" alignHeader="center"></Column>
-                            <Column field="contrato" header="Contrato" align="center" alignHeader="center"></Column>
-                            <Column field="valorParcela" body={formatarValor} header="Valor Parcela" align="center" alignHeader="center"></Column>
-                            <Column field="dataInicio" header="Data de Início" align="center" alignHeader="center"></Column>
-                            <Column field="dataVencimento" header="Data de Vencimento" align="center" alignHeader="center"></Column>
+                            <Column field="contrato.imovel.titulo" header="Contrato" align="center" alignHeader="center"></Column>
+                            <Column field="valorParcela" body={(rowData) => formatarValorRealDatatable(rowData, "valorParcela")} header="Valor Parcela" align="center" alignHeader="center"></Column>
+                            <Column field="dataInicio" header="Data de Início" body={(rowData) => formatarData(rowData, "dataInicio")} align="center" alignHeader="center"></Column>
+                            <Column field="dataVencimento" header="Data de Vencimento" body={(rowData) => formatarData(rowData, "dataVencimento")} align="center" alignHeader="center"></Column>
                             <Column field="ativa" body={formatarStatus} header="Ativa" align="center" alignHeader="center" />
                             <Column body={acoesDataTable} exportable={false} style={{ minWidth: '12rem' }} align="center" header="Ações" alignHeader="center"></Column>
                         </DataTable>
@@ -183,7 +252,7 @@ export default function CadastroParcela() {
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
                             <label htmlFor='contrato' style={{ marginBottom: '0.5rem' }}>Contrato:</label>
-                            <InputText id="contrato" value={parcela.contrato} onChange={(e) => setParcela({ ...parcela, contrato: e.target.value })} style={{ width: '300px' }} />
+                            <AutoComplete id="contrato" value={parcela.contrato} suggestions={contratosFiltrados} field="imovel.titulo" itemTemplate={customItemTemplate} completeMethod={completeMethodImoveis} onChange={(e) => setParcela({ ...parcela, contrato: e.target.value })} size={34} />
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
@@ -193,12 +262,12 @@ export default function CadastroParcela() {
 
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
                             <label htmlFor='dataInicio' style={{ marginBottom: '0.5rem' }}>Data de Início:</label>
-                            <Calendar id="dataInicio" value={parcela.dataInicio} onChange={(e) => setParcela({ ...parcela, dataInicio: e.value })} style={{ width: '300px' }} showIcon dateFormat="dd/mm/yy" locale="pt-BR" />
+                            <Calendar id="dataInicio" value={new Date(parcela.dataInicio)} onChange={(e) => setParcela({ ...parcela, dataInicio: e.value })} style={{ width: '300px' }} showIcon dateFormat="dd/mm/yy" locale="pt-BR" />
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
                             <label htmlFor='dataVencimento' style={{ marginBottom: '0.5rem' }}>Data de Vencimento:</label>
-                            <Calendar id="dataVencimento" value={parcela.dataVencimento} onChange={(e) => setParcela({ ...parcela, dataVencimento: e.value })} style={{ width: '300px' }} showIcon dateFormat="dd/mm/yy" />
+                            <Calendar id="dataVencimento" value={new Date(parcela.dataVencimento)} onChange={(e) => setParcela({ ...parcela, dataVencimento: e.value })} style={{ width: '300px' }} showIcon dateFormat="dd/mm/yy" />
                         </div>
                     </div>
                 </Dialog>
@@ -207,8 +276,8 @@ export default function CadastroParcela() {
                     footer={rodapeModalBuscar} draggable={false}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                            <label htmlFor="contrato" style={{ marginBottom: '0.5rem' }}>Contrato:</label>
-                            <InputText id="contrato" value={parcela.contrato} onChange={(e) => setParcela({ ...parcela, contrato: e.target.value })} style={{ width: '300px' }} />
+                            <label htmlFor="id" style={{ marginBottom: '0.5rem' }}>Código:</label>
+                            <InputText id="id" value={parcela.id} onChange={(e) => setParcela({ ...parcela, id: e.target.value })} style={{ width: '300px' }} />
                         </div>
                     </div>
                 </Dialog>
