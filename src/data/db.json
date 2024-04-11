@@ -32,5 +32,46 @@
       "telefone": "(43) 9 4444-4444",
       "ativo": true
     }
+  ],
+  "imovel": [
+    {
+      "id": "f16c",
+      "titulo": "CASA",
+      "descricao": "Casa pequena, 2 cômodos, jardim",
+      "proprietario": {
+        "id": "307a",
+        "nome": "Rodrigo Ayres",
+        "telefone": "(43) 9 4444-4444",
+        "ativo": true
+      },
+      "endereco": {
+        "rua": "Vereador Lemos",
+        "bairro": "Centro",
+        "numero": "404",
+        "cidade": "Ourinho"
+      },
+      "valorTotal": 3000,
+      "disponibilidadeTempo": 5
+    },
+    {
+      "id": "1986",
+      "titulo": "Apartamento",
+      "descricao": "Apartamento médio, 1 banheiro, 2 quartos.",
+      "proprietario": {
+        "id": "a5c0",
+        "nome": "Rogério Marinke",
+        "telefone": "(43) 9 5555-5555",
+        "ativo": true
+      },
+      "endereco": {
+        "rua": "Vereador Franco",
+        "bairro": "Centro",
+        "numero": "404",
+        "cidade": "Ourinhos"
+      },
+      "valorTotal": 3000,
+      "disponibilidadeTempo": 6,
+      "status": ""
+    }
   ]
 }
