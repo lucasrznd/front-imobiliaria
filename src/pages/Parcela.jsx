@@ -257,7 +257,7 @@ export default function CadastroParcela() {
 
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
                             <label htmlFor='valorParcela' style={{ marginBottom: '0.5rem' }}>Valor Parcela:</label>
-                            <InputNumber id="valorParcela" value={parcela.valorParcela} onValueChange={(e) => setParcela({ ...parcela, valorParcela: e.target.value })} mode="currency" currency="BRL" locale="pt-BR" size={23} placeholder="R$ 2.000,00" />
+                            <InputNumber id="valorParcela" value={parcela.valorParcela} onValueChange={(e) => setParcela({ ...parcela, valorParcela: e.target.value })} mode="currency" currency="BRL" locale="pt-BR" size={34} placeholder="R$ 2.000,00" />
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
