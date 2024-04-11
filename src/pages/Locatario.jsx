@@ -11,12 +11,12 @@ import { Toolbar } from 'primereact/toolbar';
 import { InputMask } from 'primereact/inputmask';
 import Rodape from "../components/Rodape";
 import { LocatarioModel } from "../models/LocatarioModel";
+import { LocatarioService } from "../services/LocatarioService";
 
 export default function CadastroLocatario() {
     const [locatario, setLocatario] = useState(new LocatarioModel());
-    const [locatarios, setLocatarios] = useState([
-        { id: 1, nome: "Exemplo", telefone: "(43) 9 9999-9999", email: "exemplo@gmail.com" },
-    ]);
+    const [locatarios, setLocatarios] = useState([]);
+    const locatarioService = new LocatarioService();
 
     const [nomeInvalido, setNomeInvalido] = useState(false);
     const [telefoneInvalido, setTelefoneInvalido] = useState(false);
@@ -70,11 +70,10 @@ export default function CadastroLocatario() {
         setBuscarVisible(false);
     }
 
-    const deletarLocatario = () => {
-        const novaLista = locatarios.filter(l => l.nome !== locatario.nome);
-        setLocatarios(novaLista);
+    const deletarLocatario = async () => {
         setDeleteLocatarioDialog(false);
-        msgAviso('Locatário removido com sucesso.')
+        await excluirLocatario();
+        await listarLocatarios();
     }
 
     const confirmDeleteLocatario = (locatario) => {
@@ -96,13 +95,13 @@ export default function CadastroLocatario() {
     const salvarLocatarioAction = () => {
         if (validarNome() && validarTelefone() && validarEmail()) {
             setDetalhesVisible(false);
-            locatarios.push(locatario);
-            msgSucesso('Locatário cadastrado.')
+            salvarLocatario();
+            msgSucesso('Locatário salvo com sucesso.');
         }
     }
 
-    const buscarLocatarioAction = () => {
-        console.log('Buscando locatário. ' + locatario.nome);
+    const buscarLocatarioAction = async () => {
+        await buscarLocatarioPorId();
         setBuscarVisible(false);
     }
 
@@ -163,7 +162,47 @@ export default function CadastroLocatario() {
             <Button label="Buscar" icon="pi pi-check" onClick={buscarLocatarioAction} autoFocus />
             <Button label="Cancelar" icon="pi pi-times" outlined onClick={fecharBusca} />
         </div>
-    )
+    );
+
+    const listarLocatarios = async () => {
+        try {
+            const response = await locatarioService.listarTodos();
+            setLocatarios(response.data);
+        } catch (error) {
+            msgErro('Erro ao carregar locatários.');
+        }
+    }
+
+    const buscarLocatarioPorId = async () => {
+        try {
+            const response = await locatarioService.buscarPorId(locatario.id);
+            setLocatarios([response.data]);
+            setLocatario(new LocatarioModel());
+        } catch (error) {
+            msgErro('Erro ao buscar locatário.');
+        }
+    }
+
+    const salvarLocatario = async () => {
+        if (locatario.id === undefined) {
+            await locatarioService.salvar(locatario);
+            await listarLocatarios();
+            setLocatario(new LocatarioModel());
+        } else {
+            await locatarioService.editar(locatario);
+            await listarLocatarios();
+            setLocatario(new LocatarioModel());
+        }
+    }
+
+    const excluirLocatario = async () => {
+        await locatarioService.excluir(locatario.id);
+        msgAviso('Locatário removido com sucesso.');
+    }
+
+    useEffect(() => {
+        listarLocatarios();
+    }, []);
 
     return (
         <div>
@@ -211,12 +250,12 @@ export default function CadastroLocatario() {
                     </div>
                 </Dialog>
 
-                <Dialog header="Buscar Locatário" visible={buscarVisible} style={{ width: '30vw', minWidth: "30vw" }} onHide={() => setDetalhesVisible(false)}
+                <Dialog header="Buscar Locatário" visible={buscarVisible} style={{ width: '40vw', minWidth: "40vw" }} onHide={() => setDetalhesVisible(false)}
                     footer={rodapeModalBuscar} draggable={false}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                            <label htmlFor='nome' style={{ marginBottom: '0.5rem' }}>Nome:</label>
-                            <InputText id="nome" value={locatario.nome} onChange={(e) => setLocatario({ ...locatario, nome: e.target.value })} style={{ width: '300px' }} />
+                            <label htmlFor='id' style={{ marginBottom: '0.5rem' }}>Código:</label>
+                            <InputText id="id" value={locatario.id} onChange={(e) => setLocatario({ ...locatario, id: e.target.value })} style={{ width: '300px' }} />
                         </div>
                     </div>
                 </Dialog>
