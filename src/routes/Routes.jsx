@@ -6,12 +6,14 @@ import CadastroContrato from "../pages/Contrato";
 import CadastroParcela from "../pages/Parcela";
 import Home from "../pages/Home";
 import Pagina404 from "../pages/Pagina404";
+import Login from "../pages/Login";
 
 const AppRoutes = () => {
     return (
         <Router>
             <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
                 <Route path="/locatario" element={<CadastroLocatario />} />
                 <Route path="/proprietario" element={<CadastroProprietario />} />
                 <Route path="/imovel" element={<CadastroImovel />} />
