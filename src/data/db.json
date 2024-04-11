@@ -73,5 +73,73 @@
       "disponibilidadeTempo": 6,
       "status": ""
     }
+  ],
+  "contrato": [
+    {
+      "id": "f232",
+      "imovel": {
+        "id": "1986",
+        "titulo": "Apartamento",
+        "descricao": "Apartamento médio, 1 banheiro, 2 quartos.",
+        "proprietario": {
+          "id": "a5c0",
+          "nome": "Rogério Marinke",
+          "telefone": "(43) 9 5555-5555",
+          "ativo": true
+        },
+        "endereco": {
+          "rua": "Vereador Franco",
+          "bairro": "Centro",
+          "numero": "404",
+          "cidade": "Ourinhos"
+        },
+        "valorTotal": 3000,
+        "disponibilidadeTempo": 6,
+        "status": ""
+      },
+      "locatario": {
+        "id": "3ff1",
+        "nome": "Lucas Ferreira",
+        "telefone": "(43) 9 9999-9999",
+        "email": "lucas@gmail.com"
+      },
+      "dataInicio": "2024-04-01T03:00:00.000Z",
+      "multa": 1212,
+      "dataTermino": "2024-04-01T03:00:00.000Z",
+      "valorMensal": 212
+    },
+    {
+      "id": "3f7e",
+      "imovel": {
+        "id": "1986",
+        "titulo": "Apartamento",
+        "descricao": "Apartamento médio, 1 banheiro, 2 quartos.",
+        "proprietario": {
+          "id": "a5c0",
+          "nome": "Rogério Marinke",
+          "telefone": "(43) 9 5555-5555",
+          "ativo": true
+        },
+        "endereco": {
+          "rua": "Vereador Franco",
+          "bairro": "Centro",
+          "numero": "404",
+          "cidade": "Ourinhos"
+        },
+        "valorTotal": 3000,
+        "disponibilidadeTempo": 6,
+        "status": ""
+      },
+      "locatario": {
+        "id": "8a7b",
+        "nome": "Guilherme Orlandini",
+        "telefone": "(43) 9 3283-2932",
+        "email": "guilherme@gmail.com"
+      },
+      "dataInicio": "2024-04-01T03:00:00.000Z",
+      "multa": 12121,
+      "dataTermino": "2024-04-15T03:00:00.000Z",
+      "valorMensal": 2121
+    }
   ]
 }
