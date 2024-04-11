@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { ImovelModel } from "../models/ImovelModel"
 import { Button } from "primereact/button";
 import MenuApp from "../components/Menu";
@@ -14,24 +14,21 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { AutoComplete } from "primereact/autocomplete";
 import { InputNumber } from "primereact/inputnumber";
 import { EnderecoModel } from "../models/EnderecoModel";
+import { ImovelService } from "../services/ImovelService";
+import { ProprietarioService } from "../services/ProprietarioService";
 
 export default function CadastroImovel() {
     const [imovel, setImovel] = useState(new ImovelModel());
-    const [imoveis, setImoveis] = useState([
-        {
-            id: 1, titulo: 'Casa', descricao: 'Casa grande, dois andares, dois banheiros, 3 quartos.', proprietario: 'Guilherme', endereco: { rua: 'Avenida Aguiar' }, valorTotal: 2000, disponibilidadeTempo: 6, ativo: true
-        }
-    ]);
-    const [endereco, setEndereco] = useState(new EnderecoModel());
+    const [imoveis, setImoveis] = useState([]);
+    const imovelService = new ImovelService();
+    const [proprietarios, setProprietarios] = useState([]);
+    const [items, setItems] = useState([]);
+    const proprietarioService = new ProprietarioService();
+
     const [detalhesVisible, setDetalhesVisible] = useState(false);
     const [buscarVisible, setBuscarVisible] = useState(false);
     const [deleteImovelDialog, setDeleteImovelDialog] = useState(false);
-    const [items, setItems] = useState([]);
     const toast = useRef();
-
-    const buscaAutocomplete = (event) => {
-        setItems([...Array(10).keys()].map(item => event.query + '-' + item));
-    }
 
     const conteudoInicial = (
         <React.Fragment>
@@ -43,13 +40,11 @@ export default function CadastroImovel() {
 
     function novoImovelAction() {
         setImovel(new ImovelModel());
-        setEndereco(new EnderecoModel());
         setDetalhesVisible(true);
     }
 
     function buscaImovelAction() {
         setImovel(new ImovelModel());
-        setEndereco(new EnderecoModel());
         setBuscarVisible(true);
     }
 
@@ -76,11 +71,10 @@ export default function CadastroImovel() {
         setBuscarVisible(false);
     }
 
-    const deletarImovel = () => {
-        const novaLista = imoveis.filter(i => i.titulo !== imovel.titulo);
-        setImoveis(novaLista);
+    const deletarImovel = async () => {
         setDeleteImovelDialog(false);
-        msgAviso('Imóvel removido com sucesso.');
+        await excluirImovel();
+        await listarImoveis();
     }
 
     const confirmDeleteImovel = (imovel) => {
@@ -100,14 +94,13 @@ export default function CadastroImovel() {
     );
 
     const salvarImovelAction = () => {
+        salvarImovel();
         setDetalhesVisible(false);
-        console.log(imovel);
-        imoveis.push(imovel);
         msgSucesso('Imóvel cadastrado com sucesso.');
     }
 
-    const buscarImovelAction = () => {
-        console.log('Buscando imóvel: ' + imovel.titulo);
+    const buscarImovelAction = async () => {
+        await buscarImovelPorId();
         setBuscarVisible(false);
     }
 
@@ -146,25 +139,64 @@ export default function CadastroImovel() {
         return 'Não';
     }
 
-    const changeEnderecoRua = (ev) => {
-        setEndereco({ ...endereco, rua: ev.target.value });
-        setImovel({ ...imovel, endereco: endereco });
+    const listarProprietarios = async () => {
+        try {
+            const response = await proprietarioService.listarTodos();
+            setProprietarios(response.data);
+        } catch (error) {
+            msgErro('Erro ao carregar proprietários.');
+        }
     }
 
-    const changeEnderecoBairro = (ev) => {
-        setEndereco({ ...endereco, bairro: ev.target.value });
-        setImovel({ ...imovel, endereco: endereco });
+    const completeMethod = (ev) => {
+        const sugestoesFiltradas = proprietarios.filter(p => p.nome.toLowerCase().includes(ev.query.toLowerCase()));
+
+        setItems(sugestoesFiltradas);
+
+        return sugestoesFiltradas;
+    };
+
+    const listarImoveis = async () => {
+        try {
+            const response = await imovelService.listarTodos();
+            setImoveis(response.data);
+        } catch (error) {
+            msgErro('Erro ao carregar imóveis.');
+        }
     }
 
-    const changeEnderecoNumero = (ev) => {
-        setEndereco({ ...endereco, numero: ev.target.value });
-        setImovel({ ...imovel, endereco: endereco });
+    const buscarImovelPorId = async () => {
+        try {
+            const response = await imovelService.buscarPorId(imovel.id);
+            setImoveis([response.data]);
+            setImovel(new ImovelModel());
+        } catch (error) {
+            msgErro('Erro ao buscar imóvel.');
+        }
     }
 
-    const changeEnderecoCidade = (ev) => {
-        setEndereco({ ...endereco, cidade: ev.target.value });
-        setImovel({ ...imovel, endereco: endereco });
+    const salvarImovel = async () => {
+        console.log(imovel);
+        if (imovel.id === undefined) {
+            await imovelService.salvar(imovel);
+            await listarImoveis();
+            setImovel(new ImovelModel());
+        } else {
+            await imovelService.editar(imovel);
+            await listarImoveis();
+            setImovel(new ImovelModel());
+        }
     }
+
+    const excluirImovel = async () => {
+        await imovelService.excluir(imovel.id);
+        msgAviso('Imóvel removido com sucesso.');
+    }
+
+    useEffect(() => {
+        listarImoveis();
+        listarProprietarios();
+    }, []);
 
     return (
         <div>
@@ -183,7 +215,7 @@ export default function CadastroImovel() {
                             <Column field="id" header="Código" align="center" alignHeader="center"></Column>
                             <Column field="titulo" header="Título" align="center" alignHeader="center"></Column>
                             <Column field="descricao" header="Descrição" align="center" alignHeader="center" />
-                            <Column field="proprietario" header="Proprietário" align="center" alignHeader="center" />
+                            <Column field="proprietario.nome" header="Proprietário" align="center" alignHeader="center" />
                             <Column field="endereco.rua" header="Endereço" align="center" alignHeader="center" />
                             <Column field="valorTotal" header="Valor Total" align="center" alignHeader="center" />
                             <Column field="disponibilidadeTempo" header="Disponibilidade (meses)" align="center" alignHeader="center" />
@@ -198,12 +230,12 @@ export default function CadastroImovel() {
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', marginBottom: '1rem' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', marginRight: '1rem', flex: 1 }}>
-                                <label htmlFor='nome' style={{ marginBottom: '0.5rem' }}>Nome:</label>
+                                <label htmlFor='nome' style={{ marginBottom: '0.5rem' }}>Título:</label>
                                 <InputText id="nome" value={imovel.titulo} onChange={(e) => setImovel({ ...imovel, titulo: e.target.value })} style={{ width: '100%' }} />
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
                                 <label htmlFor='proprietario' style={{ marginBottom: '0.5rem' }}>Proprietário:</label>
-                                <AutoComplete value={imovel.proprietario} suggestions={items} completeMethod={buscaAutocomplete} onChange={(e) => setImovel({ ...imovel, proprietario: e.target.value })} style={{ width: '100%' }} />
+                                <AutoComplete value={imovel.proprietario} suggestions={items} field="nome" completeMethod={completeMethod} onChange={(e) => setImovel({ ...imovel, proprietario: e.target.value })} style={{ width: '100%' }} />
                             </div>
                         </div>
 
@@ -231,22 +263,22 @@ export default function CadastroImovel() {
                         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', marginBottom: '1rem', width: '66%' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', marginRight: '1rem', flex: 1 }}>
                                 <label htmlFor='rua' style={{ marginBottom: '0.5rem' }}>Rua:</label>
-                                <InputText id="rua" value={endereco.rua} onChange={changeEnderecoRua} style={{ width: '100%' }} />
+                                <InputText id="rua" value={imovel.endereco?.rua} onChange={(e) => setImovel({ ...imovel, endereco: { ...imovel.endereco, rua: e.target.value } })} style={{ width: '100%' }} />
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
                                 <label htmlFor='bairro' style={{ marginBottom: '0.5rem' }}>Bairro:</label>
-                                <InputText id="bairro" value={endereco.bairro} onChange={changeEnderecoBairro} style={{ width: '100%' }} />
+                                <InputText id="bairro" value={imovel.endereco?.bairro} onChange={(e) => setImovel({ ...imovel, endereco: { ...imovel.endereco, bairro: e.target.value } })} style={{ width: '100%' }} />
                             </div>
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', width: '66%' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', marginRight: '1rem', flex: 1 }}>
                                 <label htmlFor='numero' style={{ marginBottom: '0.5rem' }}>Número:</label>
-                                <InputText id="numero" value={endereco.numero} onChange={changeEnderecoNumero} style={{ width: '100%' }} />
+                                <InputText id="numero" value={imovel.endereco?.numero} onChange={(e) => setImovel({ ...imovel, endereco: { ...imovel.endereco, numero: e.target.value } })} style={{ width: '100%' }} />
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
                                 <label htmlFor='cidade' style={{ marginBottom: '0.5rem' }}>Cidade:</label>
-                                <InputText id="cidade" value={endereco.cidade} onChange={changeEnderecoCidade} style={{ width: '100%' }} />
+                                <InputText id="cidade" value={imovel.endereco?.cidade} onChange={(e) => setImovel({ ...imovel, endereco: { ...imovel.endereco, cidade: e.target.value } })} style={{ width: '100%' }} />
                             </div>
                         </div>
                     </div>
@@ -256,12 +288,8 @@ export default function CadastroImovel() {
                     footer={rodapeModalBuscar} draggable={false}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                            <label htmlFor='nome' style={{ marginBottom: '0.5rem' }}>Nome:</label>
-                            <InputText id="nome" value={imovel.titulo} onChange={(e) => setImovel({ ...imovel, titulo: e.target.value })} style={{ width: '300px' }} />
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                            <label htmlFor='proprietario' style={{ marginBottom: '0.5rem' }}>Proprietário:</label>
-                            <AutoComplete value={imovel.proprietario} suggestions={items} completeMethod={buscaAutocomplete} onChange={(e) => setImovel({ ...imovel, proprietario: e.target.value })} size={23} />
+                            <label htmlFor='id' style={{ marginBottom: '0.5rem' }}>Código:</label>
+                            <InputText id="id" value={imovel.id} onChange={(e) => setImovel({ ...imovel, id: e.target.value })} style={{ width: '300px' }} />
                         </div>
                     </div>
                 </Dialog>
