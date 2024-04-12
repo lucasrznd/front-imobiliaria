@@ -56,6 +56,7 @@ export default function Home() {
         listarContratos();
         listarImoveis();
         listarProprietarios();
+        // eslint-disable-next-line
     }, [])
 
     return (
