@@ -18,7 +18,7 @@ export default function Pagina404() {
                             <h1 className="text-900 font-bold text-5xl mb-2">Não encontrado</h1>
                             <div className="text-600 mb-5">O conteúdo solicitado não está disponível</div>
 
-                            <a href="/" className="p-button font-bold no-underline">
+                            <a href="/home" className="p-button font-bold no-underline">
                                 <div className="flex flex-row align-items-center justify-content-center">
                                     <i className="pi pi-home"></i>
                                     <div className="flex flex-row align-items-center justify-content-center ml-2">

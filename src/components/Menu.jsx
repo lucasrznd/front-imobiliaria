@@ -40,7 +40,7 @@ export default function MenuApp() {
         }
     ];
 
-    const start = <a href='/'><img alt="logos" src={logo} height={60} className="mr-2" /></a>
+    const start = <a href='/home'><img alt="logos" src={logo} height={60} className="mr-2" /></a>
 
     return (
         <div className="card">
