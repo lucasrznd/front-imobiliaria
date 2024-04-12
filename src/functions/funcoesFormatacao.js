@@ -15,3 +15,12 @@ export function formatarValorRealDatatable(rowData, columnName) {
         return 'R$ ' + rowData[columnName] + ',00';
     }
 }
+
+export function formatarStatusAtivo(rowData, columnName) {
+    if (rowData && rowData[columnName]) {
+        if (rowData[columnName] === true) {
+            return 'Sim';
+        }
+    }
+    return 'Não';
+}
