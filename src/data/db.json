@@ -108,7 +108,8 @@
       "dataInicio": "2024-04-01T03:00:00.000Z",
       "multa": 1212,
       "dataTermino": "2024-04-01T03:00:00.000Z",
-      "valorMensal": 212
+      "valorMensal": 212,
+      "status": true
     },
     {
       "id": "3f7e",
@@ -141,7 +142,8 @@
       "dataInicio": "2024-04-01T03:00:00.000Z",
       "multa": 12121,
       "dataTermino": "2024-04-15T03:00:00.000Z",
-      "valorMensal": 2121
+      "valorMensal": 2121,
+      "status": true
     }
   ],
   "parcela": [
