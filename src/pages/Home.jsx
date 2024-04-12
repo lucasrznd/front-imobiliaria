@@ -21,14 +21,6 @@ export default function Home() {
 
     const toast = useRef();
 
-    function msgSucesso(msg) {
-        toast.current.show({ severity: 'success', summary: 'Sucesso', detail: msg, life: 3000 });
-    }
-
-    function msgAviso(msg) {
-        toast.current.show({ severity: 'warn', summary: 'Aviso', detail: msg, life: 3000 });
-    }
-
     function msgErro(msg) {
         toast.current.show({ severity: 'error', summary: 'Erro', detail: msg, life: 3000 });
     }
