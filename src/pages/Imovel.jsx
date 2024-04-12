@@ -16,6 +16,7 @@ import { InputNumber } from "primereact/inputnumber";
 import { ImovelService } from "../services/ImovelService";
 import { ProprietarioService } from "../services/ProprietarioService";
 import { formatarStatusAtivo } from "../functions/funcoesFormatacao";
+import { Checkbox } from "primereact/checkbox";
 
 export default function CadastroImovel() {
     const [imovel, setImovel] = useState(new ImovelModel());
@@ -262,7 +263,7 @@ export default function CadastroImovel() {
                             </div>
                         </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', width: '66%' }}>
+                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', width: '66%', marginBottom: '1rem' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', marginRight: '1rem', flex: 1 }}>
                                 <label htmlFor='numero' style={{ marginBottom: '0.5rem' }}>Número:</label>
                                 <InputText id="numero" value={imovel.endereco?.numero} onChange={(e) => setImovel({ ...imovel, endereco: { ...imovel.endereco, numero: e.target.value } })} style={{ width: '100%' }} />
@@ -271,6 +272,11 @@ export default function CadastroImovel() {
                                 <label htmlFor='cidade' style={{ marginBottom: '0.5rem' }}>Cidade:</label>
                                 <InputText id="cidade" value={imovel.endereco?.cidade} onChange={(e) => setImovel({ ...imovel, endereco: { ...imovel.endereco, cidade: e.target.value } })} style={{ width: '100%' }} />
                             </div>
+                        </div>
+
+                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                            <label htmlFor='status' style={{ marginBottom: '0.5rem' }}>Ativo:</label>
+                            <Checkbox id="status" onChange={(e) => setImovel({ ...imovel, status: e.checked })} checked={imovel.status} style={{ marginLeft: "5px" }} />
                         </div>
                     </div>
                 </Dialog>
