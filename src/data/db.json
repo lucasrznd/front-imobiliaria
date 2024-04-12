@@ -51,7 +51,9 @@
         "cidade": "Ourinho"
       },
       "valorTotal": 3000,
-      "disponibilidadeTempo": 5
+      "disponibilidadeTempo": 5,
+      "ativo": true,
+      "status": true
     },
     {
       "id": "1986",
@@ -71,7 +73,7 @@
       },
       "valorTotal": 3000,
       "disponibilidadeTempo": 6,
-      "status": ""
+      "status": true
     }
   ],
   "contrato": [
