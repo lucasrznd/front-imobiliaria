@@ -203,6 +203,7 @@ export default function CadastroProprietario() {
 
     useEffect(() => {
         listarProprietarios();
+        // eslint-disable-next-line
     }, []);
 
     return (

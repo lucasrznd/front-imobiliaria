@@ -188,6 +188,7 @@ export default function CadastroImovel() {
     useEffect(() => {
         listarImoveis();
         listarProprietarios();
+        // eslint-disable-next-line
     }, []);
 
     return (

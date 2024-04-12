@@ -201,6 +201,7 @@ export default function CadastroParcela() {
     useEffect(() => {
         listarParcelas();
         listarContratos();
+        // eslint-disable-next-line
     }, []);
 
     const customItemTemplate = (item) => {

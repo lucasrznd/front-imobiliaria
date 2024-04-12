@@ -202,6 +202,7 @@ export default function CadastroLocatario() {
 
     useEffect(() => {
         listarLocatarios();
+        // eslint-disable-next-line
     }, []);
 
     return (
