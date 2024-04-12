@@ -13,9 +13,9 @@ import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { AutoComplete } from "primereact/autocomplete";
 import { InputNumber } from "primereact/inputnumber";
-import { EnderecoModel } from "../models/EnderecoModel";
 import { ImovelService } from "../services/ImovelService";
 import { ProprietarioService } from "../services/ProprietarioService";
+import { formatarStatusAtivo } from "../functions/funcoesFormatacao";
 
 export default function CadastroImovel() {
     const [imovel, setImovel] = useState(new ImovelModel());
@@ -130,15 +130,6 @@ export default function CadastroImovel() {
         </div>
     );
 
-    function formatarStatus(rowData) {
-        if (rowData && rowData.ativo) {
-            if (rowData.ativo === true) {
-                return 'Sim';
-            }
-        }
-        return 'Não';
-    }
-
     const listarProprietarios = async () => {
         try {
             const response = await proprietarioService.listarTodos();
@@ -219,7 +210,7 @@ export default function CadastroImovel() {
                             <Column field="endereco.rua" header="Endereço" align="center" alignHeader="center" />
                             <Column field="valorTotal" header="Valor Total" align="center" alignHeader="center" />
                             <Column field="disponibilidadeTempo" header="Disponibilidade (meses)" align="center" alignHeader="center" />
-                            <Column field="ativo" header="Ativo" body={formatarStatus} align="center" alignHeader="center" />
+                            <Column field="status" header="Ativo" body={(rowData) => formatarStatusAtivo(rowData, "status")} align="center" alignHeader="center" />
                             <Column body={acoesDataTable} exportable={false} style={{ minWidth: '12rem' }} align="center" header="Ações" alignHeader="center" />
                         </DataTable>
                     </div>
