@@ -13,6 +13,7 @@ import { InputMask } from "primereact/inputmask";
 import { Checkbox } from "primereact/checkbox";
 import Rodape from "../components/Rodape";
 import { ProprietarioService } from "../services/ProprietarioService";
+import { formatarStatusAtivo } from "../functions/funcoesFormatacao";
 
 export default function CadastroProprietario() {
     const [proprietario, setProprietario] = useState(new ProprietarioModel());
@@ -150,15 +151,6 @@ export default function CadastroProprietario() {
         }
     }
 
-    function formatarStatus(rowData) {
-        if (rowData && rowData.ativo) {
-            if (rowData.ativo === true) {
-                return 'Sim';
-            }
-        }
-        return 'Não';
-    }
-
     const rodapeModal = (
         <div>
             <Button label="Salvar" icon="pi pi-check" onClick={salvarProprietarioAction} autoFocus />
@@ -230,7 +222,7 @@ export default function CadastroProprietario() {
                             <Column field="id" header="Código" align="center" alignHeader="center"></Column>
                             <Column field="nome" header="Nome" align="center" alignHeader="center"></Column>
                             <Column field="telefone" header="Telefone" align="center" alignHeader="center"></Column>
-                            <Column field="ativo" body={formatarStatus} header="Ativo" align="center" alignHeader="center" />
+                            <Column field="ativo" body={(rowData) => formatarStatusAtivo(rowData, "ativo")} header="Ativo" align="center" alignHeader="center" />
                             <Column body={acoesDataTable} exportable={false} style={{ minWidth: '12rem' }} align="center" header="Ações" alignHeader="center"></Column>
                         </DataTable>
                     </div>
