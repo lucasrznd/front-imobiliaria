@@ -218,6 +218,7 @@ export default function CadastroContrato() {
         listarContratos();
         listarImoveis();
         listarLocatarios();
+        // eslint-disable-next-line
     }, []);
 
     return (
