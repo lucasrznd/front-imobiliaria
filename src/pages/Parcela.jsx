@@ -15,7 +15,7 @@ import { Checkbox } from "primereact/checkbox";
 import { Calendar } from "primereact/calendar";
 import { addLocale } from "primereact/api";
 import { ParcelaService } from "../services/ParcelaService";
-import { formatarData, formatarValorRealDatatable, formatarValorReal } from "../functions/funcoesFormatacao";
+import { formatarData, formatarValorRealDatatable, formatarValorReal, formatarStatusAtivo } from "../functions/funcoesFormatacao";
 import { ContratoService } from "../services/ContratoService";
 import { AutoComplete } from "primereact/autocomplete";
 
@@ -131,15 +131,6 @@ export default function CadastroParcela() {
         toast.current.show({ severity: 'error', summary: 'Erro', detail: msg, life: 3000 });
     }
 
-    function formatarStatus(rowData) {
-        if (rowData && rowData.ativa) {
-            if (rowData.ativa === true) {
-                return 'Sim';
-            }
-        }
-        return 'Não';
-    }
-
     const rodapeModal = (
         <div>
             <Button label="Salvar" icon="pi pi-check" onClick={salvarParcelaAction} autoFocus />
@@ -241,7 +232,7 @@ export default function CadastroParcela() {
                             <Column field="valorParcela" body={(rowData) => formatarValorRealDatatable(rowData, "valorParcela")} header="Valor Parcela" align="center" alignHeader="center"></Column>
                             <Column field="dataInicio" header="Data de Início" body={(rowData) => formatarData(rowData, "dataInicio")} align="center" alignHeader="center"></Column>
                             <Column field="dataVencimento" header="Data de Vencimento" body={(rowData) => formatarData(rowData, "dataVencimento")} align="center" alignHeader="center"></Column>
-                            <Column field="ativa" body={formatarStatus} header="Ativa" align="center" alignHeader="center" />
+                            <Column field="ativa" body={(rowData) => formatarStatusAtivo(rowData, "ativa")} header="Ativa" align="center" alignHeader="center" />
                             <Column body={acoesDataTable} exportable={false} style={{ minWidth: '12rem' }} align="center" header="Ações" alignHeader="center"></Column>
                         </DataTable>
                     </div>
