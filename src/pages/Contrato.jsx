@@ -17,6 +17,9 @@ import { ContratoService } from "../services/ContratoService";
 import { LocatarioService } from "../services/LocatarioService";
 import { ImovelService } from "../services/ImovelService";
 import { InputText } from "primereact/inputtext";
+import { formatarStatusAtivo } from "../functions/funcoesFormatacao";
+import { formatarData } from "../functions/funcoesFormatacao";
+import { formatarValorRealDatatable } from "../functions/funcoesFormatacao";
 
 export default function CadastroContrato() {
     const [contrato, setContrato] = useState(new ContratoModel());
@@ -136,29 +139,6 @@ export default function CadastroContrato() {
         </div>
     );
 
-    function formatarStatus(rowData) {
-        if (rowData && rowData.ativo) {
-            if (rowData.ativo === true) {
-                return 'Sim';
-            }
-        }
-        return 'Não';
-    }
-
-    function formatarData(rowData, columnName) {
-        if (rowData && rowData[columnName]) {
-            const data = new Date(rowData[columnName]);
-            return data.toLocaleDateString('pt-BR');
-        }
-        return '';
-    }
-
-    function formatarValor(rowData, columnName) {
-        if (rowData && rowData[columnName]) {
-            return 'R$ ' + rowData[columnName] + ',00';
-        }
-    }
-
     const listarImoveis = async () => {
         try {
             const response = await imovelService.listarTodos();
@@ -258,9 +238,9 @@ export default function CadastroContrato() {
                             <Column field="locatario.nome" header="Locatário" align="center" alignHeader="center" />
                             <Column field="dataInicio" header="Data de Início" body={(rowData) => formatarData(rowData, "dataInicio")} align="center" alignHeader="center" />
                             <Column field="dataTermino" header="Data de Término" body={(rowData) => formatarData(rowData, "dataTermino")} align="center" alignHeader="center" />
-                            <Column field="valorMensal" header="Valor Mensal" body={(rowData) => formatarValor(rowData, "valorMensal")} align="center" alignHeader="center" />
-                            <Column field="multa" header="Multa" body={(rowData) => formatarValor(rowData, "multa")} align="center" alignHeader="center" />
-                            <Column field="ativo" header="Ativo" body={formatarStatus} align="center" alignHeader="center" />
+                            <Column field="valorMensal" header="Valor Mensal" body={(rowData) => formatarValorRealDatatable(rowData, "valorMensal")} align="center" alignHeader="center" />
+                            <Column field="multa" header="Multa" body={(rowData) => formatarValorRealDatatable(rowData, "multa")} align="center" alignHeader="center" />
+                            <Column field="ativo" header="Ativo" body={(rowData) => formatarStatusAtivo(rowData, "ativo")} align="center" alignHeader="center" />
                             <Column body={acoesDataTable} exportable={false} style={{ minWidth: '12rem' }} align="center" header="Ações" alignHeader="center" />
                         </DataTable>
                     </div>
