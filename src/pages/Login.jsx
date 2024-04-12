@@ -7,9 +7,12 @@ import retangulo from './../assets/images/retangulo1.png'
 import homem from './../assets/images/homem.png'
 import luminaria from './../assets/images/luminaria.png'
 import './../css/login.css'
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
     const [value, setValue] = useState('');
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         // Adicionar classe ao body quando o componente é montado
@@ -20,6 +23,10 @@ const Login = () => {
             document.body.classList.remove('login-page');
         };
     }, []);
+
+    const redirecionar = () => {
+        navigate('/home');
+    }
 
     return (
         <div className="fundo">
@@ -50,7 +57,7 @@ const Login = () => {
                         </div>
                     </div>
                     <div>
-                        <Button className="botao" label="Entrar" />
+                        <Button className="botao" label="Entrar" onClick={redirecionar} />
                     </div>
                 </div>
             </div>
