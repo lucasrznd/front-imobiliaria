@@ -20,6 +20,7 @@ import { InputText } from "primereact/inputtext";
 import { formatarStatusAtivo } from "../functions/funcoesFormatacao";
 import { formatarData } from "../functions/funcoesFormatacao";
 import { formatarValorRealDatatable } from "../functions/funcoesFormatacao";
+import { Checkbox } from "primereact/checkbox";
 
 export default function CadastroContrato() {
     const [contrato, setContrato] = useState(new ContratoModel());
@@ -240,7 +241,7 @@ export default function CadastroContrato() {
                             <Column field="dataTermino" header="Data de Término" body={(rowData) => formatarData(rowData, "dataTermino")} align="center" alignHeader="center" />
                             <Column field="valorMensal" header="Valor Mensal" body={(rowData) => formatarValorRealDatatable(rowData, "valorMensal")} align="center" alignHeader="center" />
                             <Column field="multa" header="Multa" body={(rowData) => formatarValorRealDatatable(rowData, "multa")} align="center" alignHeader="center" />
-                            <Column field="ativo" header="Ativo" body={(rowData) => formatarStatusAtivo(rowData, "ativo")} align="center" alignHeader="center" />
+                            <Column field="status" header="Ativo" body={(rowData) => formatarStatusAtivo(rowData, "status")} align="center" alignHeader="center" />
                             <Column body={acoesDataTable} exportable={false} style={{ minWidth: '12rem' }} align="center" header="Ações" alignHeader="center" />
                         </DataTable>
                     </div>
@@ -273,7 +274,7 @@ export default function CadastroContrato() {
                             </div>
                         </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', marginBottom: '1rem' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
                                 <label htmlFor='valorMensal' style={{ marginBottom: '0.5rem' }}>Valor Mensal:</label>
                                 <InputNumber id="valorMensal" value={contrato.valorMensal} onValueChange={(e) => setContrato({ ...contrato, valorMensal: +e.target.value })} mode="currency" currency="BRL" locale="pt-BR" style={{ width: "100%" }} placeholder="R$ 500,00" />
@@ -283,6 +284,11 @@ export default function CadastroContrato() {
                                 <label htmlFor='multa' style={{ marginBottom: '0.5rem' }}>Multa:</label>
                                 <InputNumber id="multa" value={contrato.multa} onValueChange={(e) => setContrato({ ...contrato, multa: +e.target.value })} mode="currency" currency="BRL" locale="pt-BR" style={{ width: "100%" }} placeholder="R$ 1000,00" />
                             </div>
+                        </div>
+
+                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                            <label htmlFor='status' style={{ marginBottom: '0.5rem' }}>Ativo:</label>
+                            <Checkbox id="status" onChange={(e) => setContrato({ ...contrato, status: e.checked })} checked={contrato.status} style={{ marginLeft: "5px" }} />
                         </div>
                     </div>
                 </Dialog>
