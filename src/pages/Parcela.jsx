@@ -241,41 +241,39 @@ export default function CadastroParcela() {
 
                 <Dialog header="Detalhes da Parcela" visible={detalhesVisible} style={{ width: '30vw', minWidth: "30vw" }} onHide={() => setDetalhesVisible(false)}
                     footer={rodapeModal} draggable={false}>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                    <div className="card p-fluid">
+                        <div className="field">
                             <label htmlFor='contrato' style={{ marginBottom: '0.5rem' }}>Contrato:</label>
-                            <AutoComplete id="contrato" value={parcela.contrato} suggestions={contratosFiltrados} field="imovel.titulo" itemTemplate={customItemTemplate} completeMethod={completeMethodImoveis} onChange={(e) => setParcela({ ...parcela, contrato: e.target.value })} size={34} />
+                            <AutoComplete id="contrato" value={parcela.contrato} suggestions={contratosFiltrados} field="imovel.titulo" itemTemplate={customItemTemplate} completeMethod={completeMethodImoveis} onChange={(e) => setParcela({ ...parcela, contrato: e.target.value })} />
                         </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                        <div className="field">
                             <label htmlFor='valorParcela' style={{ marginBottom: '0.5rem' }}>Valor Parcela:</label>
-                            <InputNumber id="valorParcela" value={parcela.valorParcela} onValueChange={(e) => setParcela({ ...parcela, valorParcela: e.target.value })} mode="currency" currency="BRL" locale="pt-BR" size={34} placeholder="R$ 2.000,00" />
+                            <InputNumber id="valorParcela" value={parcela.valorParcela} onValueChange={(e) => setParcela({ ...parcela, valorParcela: e.target.value })} mode="currency" currency="BRL" locale="pt-BR" placeholder="R$ 2.000,00" />
                         </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                        <div className="field">
                             <label htmlFor='dataInicio' style={{ marginBottom: '0.5rem' }}>Data de Início:</label>
-                            <Calendar id="dataInicio" value={new Date(parcela.dataInicio)} onChange={(e) => setParcela({ ...parcela, dataInicio: e.value })} style={{ width: '300px' }} showIcon dateFormat="dd/mm/yy" locale="pt-BR" />
+                            <Calendar id="dataInicio" value={new Date(parcela.dataInicio)} onChange={(e) => setParcela({ ...parcela, dataInicio: e.value })} showIcon dateFormat="dd/mm/yy" locale="pt-BR" />
                         </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                        <div className="field">
                             <label htmlFor='dataVencimento' style={{ marginBottom: '0.5rem' }}>Data de Vencimento:</label>
-                            <Calendar id="dataVencimento" value={new Date(parcela.dataVencimento)} onChange={(e) => setParcela({ ...parcela, dataVencimento: e.value })} style={{ width: '300px' }} showIcon dateFormat="dd/mm/yy" locale="pt-BR" />
+                            <Calendar id="dataVencimento" value={new Date(parcela.dataVencimento)} onChange={(e) => setParcela({ ...parcela, dataVencimento: e.value })} showIcon dateFormat="dd/mm/yy" locale="pt-BR" />
                         </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                            <label htmlFor='ativa' style={{ marginBottom: '0.5rem' }}>Ativa:</label>
-                            <Checkbox id="ativa" onChange={(e) => setParcela({ ...parcela, ativa: e.checked })} checked={parcela.ativa} style={{ marginLeft: "5px" }} />
+                        <div className="field">
+                            <div className="flex align-items-center justify-content-center">
+                                <label htmlFor='ativa' style={{ marginBottom: '0.5rem' }}>Ativa:</label>
+                                <Checkbox id="ativa" onChange={(e) => setParcela({ ...parcela, ativa: e.checked })} checked={parcela.ativa} className="ml-1" />
+                            </div>
                         </div>
                     </div>
                 </Dialog>
 
                 <Dialog header="Buscar Parcela" visible={buscarVisible} style={{ width: '30vw', minWidth: "30vw" }} onHide={() => setDetalhesVisible(false)}
                     footer={rodapeModalBuscar} draggable={false}>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                    <div className="card p-fluid">
+                        <div className="field">
                             <label htmlFor="id" style={{ marginBottom: '0.5rem' }}>Código:</label>
-                            <InputText id="id" value={parcela.id} onChange={(e) => setParcela({ ...parcela, id: e.target.value })} style={{ width: '300px' }} />
-                        </div>
+                            <InputText id="id" value={parcela.id} onChange={(e) => setParcela({ ...parcela, id: e.target.value })} />
+                        </div>  
                     </div>
                 </Dialog>
 

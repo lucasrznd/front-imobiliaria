@@ -283,7 +283,7 @@ export default function CadastroContrato() {
 
                             <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '1rem', flex: 1 }}>
                                 <label htmlFor='multa' style={{ marginBottom: '0.5rem' }}>Multa:</label>
-                                <InputNumber id="multa" value={contrato.multa} onValueChange={(e) => setContrato({ ...contrato, multa: +e.target.value })} mode="currency" currency="BRL" locale="pt-BR" style={{ width: "100%" }} placeholder="R$ 1000,00" />
+                                <InputNumber id="multa" value={contrato.multa} onValueChange={(e) => setContrato({ ...contrato, multa: e.target.value })} mode="currency" currency="BRL" locale="pt-BR" style={{ width: "100%" }} placeholder="R$ 1000,00" />
                             </div>
                         </div>
 
