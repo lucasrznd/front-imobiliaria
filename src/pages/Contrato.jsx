@@ -250,60 +250,50 @@ export default function CadastroContrato() {
 
                 <Dialog header="Detalhes do Contrato" visible={detalhesVisible} style={{ width: '45vw', minWidth: "40vw" }} onHide={() => setDetalhesVisible(false)}
                     footer={rodapeModal} draggable={false}>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', marginRight: '1rem', flex: 1 }}>
+                    <div className="card p-fluid">
+                        <div className="formgrid grid">
+                            <div className="field col">
                                 <label htmlFor='imovel' style={{ marginBottom: '0.5rem' }}>Imóvel:</label>
-                                <AutoComplete id="imovel" value={contrato.imovel} suggestions={imoveisFiltrados} field="titulo" completeMethod={completeMethodImoveis} onChange={(e) => setContrato({ ...contrato, imovel: e.target.value })} style={{ width: '100%' }} />
+                                <AutoComplete id="imovel" value={contrato.imovel} suggestions={imoveisFiltrados} field="titulo" completeMethod={completeMethodImoveis} onChange={(e) => setContrato({ ...contrato, imovel: e.target.value })} />
                             </div>
-
-                            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                            <div className="field col">
                                 <label htmlFor='locatario' style={{ marginBottom: '0.5rem' }}>Locatário:</label>
-                                <AutoComplete value={contrato.locatario} suggestions={locatariosFiltrados} field="nome" completeMethod={completeMethodLocatarios} onChange={(e) => setContrato({ ...contrato, locatario: e.target.value })} style={{ width: '100%' }} />
+                                <AutoComplete value={contrato.locatario} suggestions={locatariosFiltrados} field="nome" completeMethod={completeMethodLocatarios} onChange={(e) => setContrato({ ...contrato, locatario: e.target.value })} />
                             </div>
                         </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', marginRight: '1rem', flex: 1 }}>
+                        <div className="formgrid grid">
+                            <div className="field col">
                                 <label htmlFor='dataInicio' style={{ marginBottom: '0.5rem' }}>Data de Ínicio:</label>
-                                <Calendar inputId="dataInicio" value={new Date(contrato?.dataInicio)} onChange={(e) => setContrato({ ...contrato, dataInicio: e.target.value })} style={{ width: '100%' }} dateFormat="dd/mm/yy" />
+                                <Calendar inputId="dataInicio" value={new Date(contrato?.dataInicio)} onChange={(e) => setContrato({ ...contrato, dataInicio: e.target.value })} showIcon dateFormat="dd/mm/yy" />
                             </div>
-
-                            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                            <div className="field col">
                                 <label htmlFor='dataTermino' style={{ marginBottom: '0.5rem' }}>Data de Término:</label>
-                                <Calendar id="dataTermino" value={new Date(contrato?.dataTermino)} onChange={(e) => setContrato({ ...contrato, dataTermino: e.target.value })} style={{ width: '100%' }} dateFormat="dd/mm/yy" />
+                                <Calendar id="dataTermino" value={new Date(contrato?.dataTermino)} onChange={(e) => setContrato({ ...contrato, dataTermino: e.target.value })} showIcon dateFormat="dd/mm/yy" />
                             </div>
                         </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                        <div className="formgrid grid">
+                            <div className="field col">
                                 <label htmlFor='valorMensal' style={{ marginBottom: '0.5rem' }}>Valor Mensal:</label>
-                                <InputNumber id="valorMensal" value={contrato.valorMensal} onValueChange={(e) => setContrato({ ...contrato, valorMensal: +e.target.value })} mode="currency" currency="BRL" locale="pt-BR" style={{ width: "100%" }} placeholder="R$ 500,00" />
+                                <InputNumber id="valorMensal" value={contrato.valorMensal} onValueChange={(e) => setContrato({ ...contrato, valorMensal: e.target.value })} mode="currency" currency="BRL" locale="pt-BR" placeholder="R$ 1.000,00" />
                             </div>
-
-                            <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '1rem', flex: 1 }}>
+                            <div className="field col">
                                 <label htmlFor='multa' style={{ marginBottom: '0.5rem' }}>Multa:</label>
-                                <InputNumber id="multa" value={contrato.multa} onValueChange={(e) => setContrato({ ...contrato, multa: e.target.value })} mode="currency" currency="BRL" locale="pt-BR" style={{ width: "100%" }} placeholder="R$ 1000,00" />
+                                <InputNumber id="multa" value={contrato.multa} onValueChange={(e) => setContrato({ ...contrato, multa: e.target.value })} mode="currency" currency="BRL" locale="pt-BR" placeholder="R$ 1.000,00" />
                             </div>
-                        </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
-                            <label htmlFor='status' style={{ marginBottom: '0.5rem' }}>Ativo:</label>
-                            <Checkbox id="status" onChange={(e) => setContrato({ ...contrato, status: e.checked })} checked={contrato.status} style={{ marginLeft: "5px" }} />
                         </div>
                     </div>
                 </Dialog>
 
                 <Dialog header="Buscar Contrato" visible={buscarVisible} style={{ width: '30vw', minWidth: "30vw" }} onHide={() => setDetalhesVisible(false)}
                     footer={rodapeModalBuscar} draggable={false}>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                    <div className="card p-fluid">
+                        <div className="field">
                             <label htmlFor='id' style={{ marginBottom: '0.5rem' }}>Código:</label>
-                            <InputText id="id" value={contrato.id} onChange={(e) => setContrato({ ...contrato, id: e.target.value })} style={{ width: '300px' }} />
+                            <InputText id="id" value={contrato.id} onChange={(e) => setContrato({ ...contrato, id: e.target.value })} placeholder="Ex: 2a78" />
                         </div>
                     </div>
-
                 </Dialog>
 
                 <Dialog visible={deleteContratoDialog} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Confirmação" modal footer={deleteContratoDialogFooter} onHide={hideDeleteContratoDialog}>
