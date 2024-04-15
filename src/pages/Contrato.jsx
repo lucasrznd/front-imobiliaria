@@ -283,6 +283,12 @@ export default function CadastroContrato() {
                                 <InputNumber id="multa" value={contrato.multa} onValueChange={(e) => setContrato({ ...contrato, multa: e.target.value })} mode="currency" currency="BRL" locale="pt-BR" placeholder="R$ 1.000,00" />
                             </div>
                         </div>
+                        <div className="field">
+                            <div className="flex align-items-center justify-content-center">
+                                <label htmlFor='status'>Ativo:</label>
+                                <Checkbox id="status" onChange={(e) => setContrato({ ...contrato, status: e.checked })} checked={contrato.status} className="ml-1" />
+                            </div>
+                        </div>
                     </div>
                 </Dialog>
 
