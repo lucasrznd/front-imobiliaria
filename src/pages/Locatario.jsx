@@ -18,9 +18,6 @@ export default function CadastroLocatario() {
     const [locatarios, setLocatarios] = useState([]);
     const locatarioService = new LocatarioService();
 
-    const [nomeInvalido, setNomeInvalido] = useState(false);
-    const [telefoneInvalido, setTelefoneInvalido] = useState(false);
-    const [emailInvalido, setEmailInvalido] = useState(false);
     const [detalhesVisible, setDetalhesVisible] = useState(false);
     const [buscarVisible, setBuscarVisible] = useState(false);
     const [deleteLocatarioDialog, setDeleteLocatarioDialog] = useState(false);
@@ -37,9 +34,6 @@ export default function CadastroLocatario() {
     function novoLocatarioAction() {
         setLocatario(new LocatarioModel());
         setDetalhesVisible(true);
-        setNomeInvalido(false);
-        setTelefoneInvalido(false);
-        setEmailInvalido(false);
     }
 
     function buscaLocatarioAction() {
@@ -93,11 +87,9 @@ export default function CadastroLocatario() {
     );
 
     const salvarLocatarioAction = () => {
-        if (validarNome() && validarTelefone() && validarEmail()) {
-            setDetalhesVisible(false);
-            salvarLocatario();
-            msgSucesso('Locatário salvo com sucesso.');
-        }
+        setDetalhesVisible(false);
+        salvarLocatario();
+        msgSucesso('Locatário salvo com sucesso.');
     }
 
     const buscarLocatarioAction = async () => {
@@ -115,39 +107,6 @@ export default function CadastroLocatario() {
 
     function msgErro(msg) {
         toast.current.show({ severity: 'error', summary: 'Erro', detail: msg, life: 3000 });
-    }
-
-    const validarNome = () => {
-        if (locatario.nome === undefined || locatario.nome === '') {
-            msgErro('Nome é obrigatório.');
-            setNomeInvalido(true);
-            return false;
-        } else {
-            setNomeInvalido(false);
-            return true;
-        }
-    }
-
-    const validarTelefone = () => {
-        if (locatario.telefone === undefined || locatario.telefone === '') {
-            msgErro('Telefone é obrigatório.');
-            setTelefoneInvalido(true);
-            return false;
-        } else {
-            setTelefoneInvalido(false);
-            return true;
-        }
-    }
-
-    const validarEmail = () => {
-        if (locatario.email === undefined || locatario.email === '') {
-            msgErro('Email é obrigatório.');
-            setEmailInvalido(true);
-            return false;
-        } else {
-            setEmailInvalido(false);
-            return true;
-        }
     }
 
     const rodapeModal = (
@@ -232,20 +191,18 @@ export default function CadastroLocatario() {
                     <div className="card p-fluid">
                         <div className="field">
                             <label htmlFor='nome' style={{ marginBottom: '0.5rem' }}>Nome:</label>
-                            <InputText id="nome" value={locatario.nome} onChange={(e) => setLocatario({ ...locatario, nome: e.target.value })}
-                                required className={nomeInvalido ? "p-invalid" : ""} />
+                            <InputText id="nome" value={locatario.nome} onChange={(e) => setLocatario({ ...locatario, nome: e.target.value })} />
                         </div>
 
                         <div className="field">
                             <label htmlFor='telefone' style={{ marginBottom: '0.5rem' }}>Telefone:</label>
                             <InputMask id="telefone" value={locatario.telefone} onChange={(e) => setLocatario({ ...locatario, telefone: e.target.value })}
-                                mask="(99) 9 9999-9999" placeholder="(99) 9 9999-9999" className={telefoneInvalido ? "p-invalid" : ""} />
+                                mask="(99) 9 9999-9999" placeholder="(99) 9 9999-9999" />
                         </div>
 
                         <div className="field">
                             <label htmlFor='email' style={{ marginBottom: '0.5rem' }}>Email:</label>
-                            <InputText id="email" value={locatario.email} onChange={(e) => setLocatario({ ...locatario, email: e.target.value })}
-                                className={emailInvalido ? "p-invalid" : ""} />
+                            <InputText id="email" value={locatario.email} onChange={(e) => setLocatario({ ...locatario, email: e.target.value })} />
                         </div>
                     </div>
                 </Dialog>
