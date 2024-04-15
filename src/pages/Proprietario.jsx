@@ -20,9 +20,6 @@ export default function CadastroProprietario() {
     const [proprietarios, setProprietarios] = useState([]);
     const proprietarioService = new ProprietarioService();
 
-    const [nomeInvalido, setNomeInvalido] = useState(false);
-    const [telefoneInvalido, setTelefoneInvalido] = useState(false);
-    const [statusInvalido, setStatusInvalido] = useState(false);
     const [detalhesVisible, setDetalhesVisible] = useState(false);
     const [buscarVisible, setBuscarVisible] = useState(false);
     const [deleteProprietarioDialog, setDeleteProprietarioDialog] = useState(false);
@@ -39,8 +36,6 @@ export default function CadastroProprietario() {
     function novoProprietarioAction() {
         setProprietario(new ProprietarioModel());
         setDetalhesVisible(true);
-        setNomeInvalido(false);
-        setTelefoneInvalido(false);
     }
 
     function buscaProprietarioAction() {
@@ -94,11 +89,9 @@ export default function CadastroProprietario() {
     );
 
     const salvarProprietarioAction = () => {
-        if (validarNome() && validarTelefone() && validarStatus()) {
-            setDetalhesVisible(false);
-            salvarProprietario();
-            msgSucesso('Proprietário salvo com sucesso.');
-        }
+        setDetalhesVisible(false);
+        salvarProprietario();
+        msgSucesso('Proprietário salvo com sucesso.');
     }
 
     const buscarProprietarioAction = async () => {
@@ -116,39 +109,6 @@ export default function CadastroProprietario() {
 
     function msgErro(msg) {
         toast.current.show({ severity: 'error', summary: 'Erro', detail: msg, life: 3000 });
-    }
-
-    const validarNome = () => {
-        if (proprietario.nome === undefined || proprietario.nome === '') {
-            msgErro('Nome é obrigatório.');
-            setNomeInvalido(true);
-            return false;
-        } else {
-            setNomeInvalido(false);
-            return true;
-        }
-    }
-
-    const validarTelefone = () => {
-        if (proprietario.telefone === undefined || proprietario.telefone === '') {
-            msgErro('Telefone é obrigatório.');
-            setTelefoneInvalido(true);
-            return false;
-        } else {
-            setTelefoneInvalido(false);
-            return true;
-        }
-    }
-
-    const validarStatus = () => {
-        if (proprietario.ativo === undefined) {
-            msgErro('Status é obrigatório.');
-            setStatusInvalido(true);
-            return false;
-        } else {
-            setStatusInvalido(false);
-            return true;
-        }
     }
 
     const rodapeModal = (
@@ -231,33 +191,31 @@ export default function CadastroProprietario() {
 
                 <Dialog header="Detalhes do Proprietário" visible={detalhesVisible} style={{ width: '30vw', minWidth: "30vw" }} onHide={() => setDetalhesVisible(false)}
                     footer={rodapeModal} draggable={false}>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                            <label htmlFor='nome' style={{ marginBottom: '0.5rem' }}>Nome:</label>
-                            <InputText id="nome" value={proprietario.nome} onChange={(e) => setProprietario({ ...proprietario, nome: e.target.value })} style={{ width: '300px' }}
-                                required className={nomeInvalido ? "p-invalid" : ""} />
+                    <div className="card p-fluid">
+                        <div className="field">
+                            <InputText id="nome" value={proprietario.nome} onChange={(e) => setProprietario({ ...proprietario, nome: e.target.value })} />
                         </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                        <div className="field">
                             <label htmlFor='telefone' style={{ marginBottom: '0.5rem' }}>Telefone:</label>
-                            <InputMask id="telefone" value={proprietario.telefone} onChange={(e) => setProprietario({ ...proprietario, telefone: e.target.value })} mask="(99) 9 9999-9999" placeholder="(99) 9 9999-9999"
-                                style={{ width: '300px' }} className={telefoneInvalido ? "p-invalid" : ""} />
+                            <InputMask id="telefone" value={proprietario.telefone} onChange={(e) => setProprietario({ ...proprietario, telefone: e.target.value })} mask="(99) 9 9999-9999" placeholder="(99) 9 9999-9999" />
                         </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                            <label htmlFor='ativo' style={{ marginBottom: '0.5rem' }}>Ativo:</label>
-                            <Checkbox id="ativo" onChange={(e) => setProprietario({ ...proprietario, ativo: e.checked })} checked={proprietario.ativo}
-                                className={statusInvalido ? "p-invalid" : ""} style={{ marginLeft: "5px" }} />
+                        <div className="field">
+                            <div className="flex align-items-center justify-content-center">
+                                <label htmlFor='ativo' style={{ marginBottom: '0.5rem' }}>Ativo:</label>
+                                <Checkbox id="ativo" onChange={(e) => setProprietario({ ...proprietario, ativo: e.checked })} checked={proprietario.ativo} className="ml-1" />
+                            </div>
                         </div>
                     </div>
                 </Dialog>
 
                 <Dialog header="Buscar Proprietário" visible={buscarVisible} style={{ width: '30vw', minWidth: "30vw" }} onHide={() => setDetalhesVisible(false)}
                     footer={rodapeModalBuscar} draggable={false}>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                    <div className="card p-fluid">
+                        <div className="field">
                             <label htmlFor='id' style={{ marginBottom: '0.5rem' }}>Código:</label>
-                            <InputText id="id" value={proprietario.id} onChange={(e) => setProprietario({ ...proprietario, id: e.target.value })} style={{ width: '300px' }} />
+                            <InputText id="id" value={proprietario.id} onChange={(e) => setProprietario({ ...proprietario, id: e.target.value })} placeholder="Ex: 2a78"q />
                         </div>
                     </div>
                 </Dialog>
