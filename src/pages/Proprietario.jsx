@@ -193,6 +193,7 @@ export default function CadastroProprietario() {
                     footer={rodapeModal} draggable={false}>
                     <div className="card p-fluid">
                         <div className="field">
+                            <label htmlFor='nome' style={{ marginBottom: '0.5rem' }}>Nome:</label>
                             <InputText id="nome" value={proprietario.nome} onChange={(e) => setProprietario({ ...proprietario, nome: e.target.value })} />
                         </div>
 
@@ -215,7 +216,7 @@ export default function CadastroProprietario() {
                     <div className="card p-fluid">
                         <div className="field">
                             <label htmlFor='id' style={{ marginBottom: '0.5rem' }}>Código:</label>
-                            <InputText id="id" value={proprietario.id} onChange={(e) => setProprietario({ ...proprietario, id: e.target.value })} placeholder="Ex: 2a78"q />
+                            <InputText id="id" value={proprietario.id} onChange={(e) => setProprietario({ ...proprietario, id: e.target.value })} placeholder="Ex: 2a78" q />
                         </div>
                     </div>
                 </Dialog>

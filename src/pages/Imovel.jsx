@@ -220,74 +220,61 @@ export default function CadastroImovel() {
 
                 <Dialog header="Detalhes do Imóvel" visible={detalhesVisible} style={{ width: '45vw', minWidth: "40vw" }} onHide={() => setDetalhesVisible(false)}
                     footer={rodapeModal} draggable={false}>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', marginRight: '1rem', flex: 1 }}>
-                                <label htmlFor='nome' style={{ marginBottom: '0.5rem' }}>Título:</label>
-                                <InputText id="nome" value={imovel.titulo} onChange={(e) => setImovel({ ...imovel, titulo: e.target.value })} style={{ width: '100%' }} />
-                            </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                                <label htmlFor='proprietario' style={{ marginBottom: '0.5rem' }}>Proprietário:</label>
-                                <AutoComplete value={imovel.proprietario} suggestions={items} field="nome" completeMethod={completeMethod} onChange={(e) => setImovel({ ...imovel, proprietario: e.target.value })} style={{ width: '100%' }} />
-                            </div>
+                    <div className="p-fluid formgrid grid">
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor='nome' style={{ marginBottom: '0.5rem' }}>Título:</label>
+                            <InputText id="nome" value={imovel.titulo} onChange={(e) => setImovel({ ...imovel, titulo: e.target.value })} />
                         </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem', width: '100%', maxWidth: '28vw' }}>
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor='proprietario' style={{ marginBottom: '0.5rem' }}>Proprietário:</label>
+                            <AutoComplete value={imovel.proprietario} suggestions={items} field="nome" completeMethod={completeMethod} onChange={(e) => setImovel({ ...imovel, proprietario: e.target.value })} />
+                        </div>
+                        <div className="field col-12">
                             <label htmlFor='descricao' style={{ marginBottom: '0.5rem' }}>Descrição:</label>
-                            <InputTextarea id="descricao" value={imovel.descricao} onChange={(e) => setImovel({ ...imovel, descricao: e.target.value })} style={{ width: '100%' }} />
+                            <InputTextarea id="descricao" value={imovel.descricao} onChange={(e) => setImovel({ ...imovel, descricao: e.target.value })} rows={4} />
                         </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', marginRight: '1rem', flex: 2 }}>
-                                <label htmlFor='disponibilidadeTempo' style={{ marginBottom: '0.5rem' }}>Disponibilidade (meses):</label>
-                                <InputNumber inputId="disponibilidadeTempo" value={imovel.disponibilidadeTempo} onValueChange={(e) => setImovel({ ...imovel, disponibilidadeTempo: e.target.value })} mode="decimal" showButtons min={1} max={12} size={15} />
-                            </div>
-
-                            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                                <label htmlFor='valorTotal' style={{ marginBottom: '0.5rem' }}>Valor Total:</label>
-                                <InputNumber id="valorTotal" value={imovel.valorTotal} onValueChange={(e) => setImovel({ ...imovel, valorTotal: e.target.value })} mode="currency" currency="BRL" locale="pt-BR" style={{ width: "100%" }} placeholder="R$ 2.000,00" />
-                            </div>
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor='disponibilidadeTempo' style={{ marginBottom: '0.5rem' }}>Disponibilidade (meses):</label>
+                            <InputNumber inputId="disponibilidadeTempo" value={imovel.disponibilidadeTempo} onValueChange={(e) => setImovel({ ...imovel, disponibilidadeTempo: e.target.value })} placeholder="6" mode="decimal" showButtons min={1} max={12} />
                         </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%', maxWidth: '28vw' }}>
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor='valorTotal' style={{ marginBottom: '0.5rem' }}>Valor Total:</label>
+                            <InputNumber id="valorTotal" value={imovel.valorTotal} onValueChange={(e) => setImovel({ ...imovel, valorTotal: e.target.value })} mode="currency" currency="BRL" locale="pt-BR" placeholder="R$ 1.000,00" />
+                        </div>
+                        <div className="field col-12 mb-1">
                             <h2 style={{ color: "#069669" }}>Endereço</h2>
                         </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', marginBottom: '1rem', width: '66%' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', marginRight: '1rem', flex: 1 }}>
-                                <label htmlFor='rua' style={{ marginBottom: '0.5rem' }}>Rua:</label>
-                                <InputText id="rua" value={imovel.endereco?.rua} onChange={(e) => setImovel({ ...imovel, endereco: { ...imovel.endereco, rua: e.target.value } })} style={{ width: '100%' }} />
-                            </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                                <label htmlFor='bairro' style={{ marginBottom: '0.5rem' }}>Bairro:</label>
-                                <InputText id="bairro" value={imovel.endereco?.bairro} onChange={(e) => setImovel({ ...imovel, endereco: { ...imovel.endereco, bairro: e.target.value } })} style={{ width: '100%' }} />
-                            </div>
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor='rua' style={{ marginBottom: '0.5rem' }}>Rua:</label>
+                            <InputText id="rua" value={imovel.endereco?.rua} onChange={(e) => setImovel({ ...imovel, endereco: { ...imovel.endereco, rua: e.target.value } })} />
                         </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', width: '66%', marginBottom: '1rem' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', marginRight: '1rem', flex: 1 }}>
-                                <label htmlFor='numero' style={{ marginBottom: '0.5rem' }}>Número:</label>
-                                <InputText id="numero" value={imovel.endereco?.numero} onChange={(e) => setImovel({ ...imovel, endereco: { ...imovel.endereco, numero: e.target.value } })} style={{ width: '100%' }} />
-                            </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                                <label htmlFor='cidade' style={{ marginBottom: '0.5rem' }}>Cidade:</label>
-                                <InputText id="cidade" value={imovel.endereco?.cidade} onChange={(e) => setImovel({ ...imovel, endereco: { ...imovel.endereco, cidade: e.target.value } })} style={{ width: '100%' }} />
-                            </div>
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor='bairro' style={{ marginBottom: '0.5rem' }}>Bairro:</label>
+                            <InputText id="bairro" value={imovel.endereco?.bairro} onChange={(e) => setImovel({ ...imovel, endereco: { ...imovel.endereco, bairro: e.target.value } })} />
                         </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor='numero' style={{ marginBottom: '0.5rem' }}>Número:</label>
+                            <InputText id="numero" value={imovel.endereco?.numero} onChange={(e) => setImovel({ ...imovel, endereco: { ...imovel.endereco, numero: e.target.value } })} />
+                        </div>
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor='cidade' style={{ marginBottom: '0.5rem' }}>Cidade:</label>
+                            <InputText id="cidade" value={imovel.endereco?.cidade} onChange={(e) => setImovel({ ...imovel, endereco: { ...imovel.endereco, cidade: e.target.value } })} />
+                        </div>
+                    </div>
+                    <div className="field">
+                        <div className="flex align-items-center justify-content-center">
                             <label htmlFor='status' style={{ marginBottom: '0.5rem' }}>Ativo:</label>
-                            <Checkbox id="status" onChange={(e) => setImovel({ ...imovel, status: e.checked })} checked={imovel.status} style={{ marginLeft: "5px" }} />
+                            <Checkbox id="status" onChange={(e) => setImovel({ ...imovel, status: e.checked })} checked={imovel.status} className="ml-1" />
                         </div>
                     </div>
                 </Dialog>
 
                 <Dialog header="Buscar Imóvel" visible={buscarVisible} style={{ width: '30vw', minWidth: "30vw" }} onHide={() => setDetalhesVisible(false)}
                     footer={rodapeModalBuscar} draggable={false}>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                    <div className="card p-fluid">
+                        <div className="field">
                             <label htmlFor='id' style={{ marginBottom: '0.5rem' }}>Código:</label>
-                            <InputText id="id" value={imovel.id} onChange={(e) => setImovel({ ...imovel, id: e.target.value })} style={{ width: '300px' }} />
+                            <InputText id="id" value={imovel.id} onChange={(e) => setImovel({ ...imovel, id: e.target.value })} placeholder="Ex: 2a78" />
                         </div>
                     </div>
                 </Dialog>
