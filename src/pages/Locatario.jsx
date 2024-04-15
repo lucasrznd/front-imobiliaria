@@ -229,34 +229,33 @@ export default function CadastroLocatario() {
 
                 <Dialog header="Detalhes do Locatário" visible={detalhesVisible} style={{ width: '30vw', minWidth: "30vw" }} onHide={() => setDetalhesVisible(false)}
                     footer={rodapeModal} draggable={false}>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                    <div className="card p-fluid">
+                        <div className="field">
                             <label htmlFor='nome' style={{ marginBottom: '0.5rem' }}>Nome:</label>
-                            <InputText id="nome" value={locatario.nome} onChange={(e) => setLocatario({ ...locatario, nome: e.target.value })} style={{ width: '300px' }}
+                            <InputText id="nome" value={locatario.nome} onChange={(e) => setLocatario({ ...locatario, nome: e.target.value })}
                                 required className={nomeInvalido ? "p-invalid" : ""} />
                         </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                        <div className="field">
                             <label htmlFor='telefone' style={{ marginBottom: '0.5rem' }}>Telefone:</label>
-                            <InputMask id="telefone" value={locatario.telefone} onChange={(e) => setLocatario({ ...locatario, telefone: e.target.value })} mask="(99) 9 9999-9999" placeholder="(99) 9 9999-9999"
-                                style={{ width: '300px' }} className={telefoneInvalido ? "p-invalid" : ""} />
+                            <InputMask id="telefone" value={locatario.telefone} onChange={(e) => setLocatario({ ...locatario, telefone: e.target.value })}
+                                mask="(99) 9 9999-9999" placeholder="(99) 9 9999-9999" className={telefoneInvalido ? "p-invalid" : ""} />
                         </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                        <div className="field">
                             <label htmlFor='email' style={{ marginBottom: '0.5rem' }}>Email:</label>
                             <InputText id="email" value={locatario.email} onChange={(e) => setLocatario({ ...locatario, email: e.target.value })}
-                                style={{ width: '300px' }} className={emailInvalido ? "p-invalid" : ""} />
+                                className={emailInvalido ? "p-invalid" : ""} />
                         </div>
-
                     </div>
                 </Dialog>
 
-                <Dialog header="Buscar Locatário" visible={buscarVisible} style={{ width: '40vw', minWidth: "40vw" }} onHide={() => setDetalhesVisible(false)}
+                <Dialog header="Buscar Locatário" visible={buscarVisible} style={{ width: '30vw', minWidth: "30vw" }} onHide={() => setDetalhesVisible(false)}
                     footer={rodapeModalBuscar} draggable={false}>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                    <div className="card p-fluid">
+                        <div className="field">
                             <label htmlFor='id' style={{ marginBottom: '0.5rem' }}>Código:</label>
-                            <InputText id="id" value={locatario.id} onChange={(e) => setLocatario({ ...locatario, id: e.target.value })} style={{ width: '300px' }} />
+                            <InputText id="id" value={locatario.id} onChange={(e) => setLocatario({ ...locatario, id: e.target.value })} placeholder="Ex: 2a78" />
                         </div>
                     </div>
                 </Dialog>
