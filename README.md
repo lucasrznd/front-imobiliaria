@@ -1,38 +1,73 @@
-# Sistema Gerenciador de Imóveis (SGI)
+<p align="center">
+  <img width="380" height="216" src="https://raw.githubusercontent.com/lucasrznd/front-imobiliaria/main/src/assets/images/logo-sgi.png">
+</p>
 
-O Sistema Gerenciador de Imóveis (SGI) é uma aplicação frontend desenvolvida em ReactJS para auxiliar pequenas imobiliárias no gerenciamento de locatários, proprietários, imóveis, contratos e parcelas.
+<div align="center">
 
-## Funcionalidades
+![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+</div>
 
-- Cadastro de Locatários: Registre informações sobre os locatários dos imóveis.
-- Cadastro de Proprietários: Mantenha um registro dos proprietários dos imóveis gerenciados.
-- Cadastro de Imóveis: Adicione detalhes sobre os imóveis disponíveis para locação.
-- Gestão de Contratos: Gerencie contratos de locação entre locatários e proprietários.
-- Controle de Parcelas: Acompanhe as parcelas dos contratos, incluindo datas de vencimento e status de pagamento.
+<p align="center">
+ <a href="#description">Description</a> • 
+ <a href="#features">Features</a> • 
+ <a href="#installation">Installation</a> •
+ <a href="#contribution">Contribution</a> 
+</p>
 
-## Tecnologias Utilizadas
+<h2 id="description">📙 Description</h2>
+The Real Estate Management System (SGI) is a frontend application developed in ReactJS to help small real estate agencies manage tenants, owners, properties, contracts, and installments.
 
-- **ReactJS**: Biblioteca JavaScript para construção de interfaces de usuário.
-- **PrimeReact**: Biblioteca de componentes prontos para React, utilizada para elementos como Inputs, menus e tabelas.
-- **PrimeFlex**: Sistema de layout flexível baseado em flexbox, para estilização CSS.
+<h2 id="features">✨ Features</h2>
 
-## Instalação
+- **Tenant Registration**: Register information about property tenants.
+- **Owner Registration**: Maintain a record of property owners.
+- **Property Registration**: Add details about properties available for rent.
+- **Contract Management**: Manage rental contracts between tenants and owners.
+- **Installment Control**: Track contract installments, including due dates and payment status.
 
-1. Clone este repositório: `git clone https://github.com/lucasrznd/front-imobiliaria.git`
-2. Navegue até o diretório do projeto: `cd app-imobiliaria`
-3. Instale as dependências: `npm install`
+### Technologies Used
 
-## Uso
+- **ReactJS**: JavaScript library for building user interfaces.
+- **PrimeReact**: Library of ready-made components for React, used for elements like inputs, menus, and tables.
+- **PrimeFlex**: Flexible layout system based on flexbox for CSS styling.
 
-1. Inicie o servidor de desenvolvimento: `npm start`
-2. Abra o navegador e acesse `http://localhost:3000`
+<h2 id="installation">🛠️ Installation</h2>
 
-## Contribuindo
+Follow the steps below to set up the project on your local machine:
 
-Contribuições são bem-vindas! Para contribuir com o projeto, siga estes passos:
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/lucasrznd/front-imobiliaria.git
+    cd front-imobiliaria
+    ```
 
-1. Faça um fork do repositório
-2. Crie uma branch para sua feature: `git checkout -b feature-nova`
-3. Faça commit das suas mudanças: `git commit -am 'Adiciona nova feature'`
-4. Faça push para a branch: `git push origin feature-nova`
-5. Abra um Pull Request
+2. Install the project dependencies:
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
+
+### Running the Application
+
+To start the application in development mode, run the command:
+
+```bash
+npm start
+# or
+yarn start
+```
+
+<h2 id="contribution">🤝 Contribution</h2>
+
+Contributions are welcome! If you have suggestions, improvements, or find bugs, feel free to open an issue or submit a pull request.
+
+<h2 id="author">👨🏻‍💻 Author</h2>
+
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/lucasrznd"><img src="https://avatars.githubusercontent.com/u/101664450?v=4&v=" width="115px;" alt="Lucas Rezende"/><br /><sub><b>Lucas Rezende</b></sub></a><br/><a title="Código">💻</a></td>
+  </tbody>
+</table>
