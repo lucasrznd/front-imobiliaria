@@ -144,6 +144,41 @@
       "dataTermino": "2024-04-15T03:00:00.000Z",
       "valorMensal": 2121,
       "status": true
+    },
+    {
+      "id": "3088",
+      "imovel": {
+        "id": "f16c",
+        "titulo": "CASA",
+        "descricao": "Casa pequena, 2 cômodos, jardim",
+        "proprietario": {
+          "id": "307a",
+          "nome": "Rodrigo Ayres",
+          "telefone": "(43) 9 4444-4444",
+          "ativo": true
+        },
+        "endereco": {
+          "rua": "Vereador Lemos",
+          "bairro": "Centro",
+          "numero": "404",
+          "cidade": "Ourinho"
+        },
+        "valorTotal": 3000,
+        "disponibilidadeTempo": 5,
+        "ativo": true,
+        "status": true
+      },
+      "locatario": {
+        "id": "8a7b",
+        "nome": "Guilherme Orlandini",
+        "telefone": "(43) 9 3283-2932",
+        "email": "guilherme@gmail.com"
+      },
+      "dataInicio": "2024-05-07T03:00:00.000Z",
+      "valorMensal": 500,
+      "multa": 3000,
+      "status": true,
+      "dataTermino": "2024-08-13T03:00:00.000Z"
     }
   ],
   "parcela": [
