@@ -74,7 +74,10 @@ export default function CadastroParcela() {
     };
 
     const detalhesParcela = (parcela) => {
+        console.log(parcela);
         setParcela({ ...parcela });
+        setParcela({...parcela, dataInicio: new Date(parcela.dataInicio)});
+        setParcela({...parcela, dataVencimento: new Date(parcela.dataVencimento)});
         setDetalhesVisible(true);
     }
 
@@ -252,11 +255,11 @@ export default function CadastroParcela() {
                         </div>
                         <div className="field">
                             <label htmlFor='dataInicio' style={{ marginBottom: '0.5rem' }}>Data de Início:</label>
-                            <Calendar id="dataInicio" value={new Date(parcela.dataInicio)} onChange={(e) => setParcela({ ...parcela, dataInicio: e.value })} showIcon dateFormat="dd/mm/yy" locale="pt-BR" />
+                            <Calendar id="dataInicio" value={parcela.dataInicio} onChange={(e) => setParcela({ ...parcela, dataInicio: new Date(e.value) })} showIcon dateFormat="dd/mm/yy" locale="pt-BR" />
                         </div>
                         <div className="field">
                             <label htmlFor='dataVencimento' style={{ marginBottom: '0.5rem' }}>Data de Vencimento:</label>
-                            <Calendar id="dataVencimento" value={new Date(parcela.dataVencimento)} onChange={(e) => setParcela({ ...parcela, dataVencimento: e.value })} showIcon dateFormat="dd/mm/yy" locale="pt-BR" />
+                            <Calendar id="dataVencimento" value={parcela.dataVencimento} onChange={(e) => setParcela({ ...parcela, dataVencimento: new Date(e.value) })} showIcon dateFormat="dd/mm/yy" locale="pt-BR" />
                         </div>
                         <div className="field">
                             <div className="flex align-items-center justify-content-center">
@@ -273,7 +276,7 @@ export default function CadastroParcela() {
                         <div className="field">
                             <label htmlFor="id" style={{ marginBottom: '0.5rem' }}>Código:</label>
                             <InputText id="id" value={parcela.id} onChange={(e) => setParcela({ ...parcela, id: e.target.value })} />
-                        </div>  
+                        </div>
                     </div>
                 </Dialog>
 
