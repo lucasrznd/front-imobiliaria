@@ -12,9 +12,10 @@ import { InputMask } from "primereact/inputmask";
 import { Checkbox } from "primereact/checkbox";
 import Rodape from "../components/Rodape";
 import { ProprietarioService } from "../services/ProprietarioService";
-import { formatarStatusAtivo } from "../functions/funcoesFormatacao";
 import { msgAviso, msgErro, msgSucesso } from "../util/ToastMessages";
 import { useFormik } from "formik";
+import { Tag } from "primereact/tag";
+import { Dropdown } from "primereact/dropdown";
 
 export default function CadastroProprietario() {
     const [proprietarios, setProprietarios] = useState([]);
@@ -23,13 +24,14 @@ export default function CadastroProprietario() {
     const [detalhesVisible, setDetalhesVisible] = useState(false);
     const [buscarVisible, setBuscarVisible] = useState(false);
     const [deleteProprietarioDialog, setDeleteProprietarioDialog] = useState(false);
+    const [statuses] = useState(['true', 'false']);
     const toast = useRef();
 
     const formik = useFormik({
         initialValues: {
             id: undefined,
             nome: '',
-            telefone: '',
+            telefone: undefined,
             ativo: false
         },
         validate: (dados) => {
@@ -77,7 +79,7 @@ export default function CadastroProprietario() {
     function novoProprietarioAction() {
         formik.setFieldValue('id', undefined);
         formik.setFieldValue('nome', '');
-        formik.setFieldValue('telefone', '');
+        formik.setFieldValue('telefone', undefined);
         formik.setFieldValue('ativo', false);
         formik.resetForm();
         setDetalhesVisible(true);
@@ -155,6 +157,26 @@ export default function CadastroProprietario() {
         </div>
     );
 
+    const ativoBodyTemplate = (rowData) => {
+        if (rowData.ativo) {
+            return <Tag value="SIM" severity="success" />
+        }
+        return <Tag value="NÃO" severity="danger" />
+    }
+
+    const statusItemTemplate = (option) => {
+        if (option === 'true') {
+            return <Tag value="SIM" severity="success" />;
+        }
+        return <Tag value="NÃO" severity="danger" />;
+    };
+
+    const statusRowFilterTemplate = (options) => {
+        return (
+            <Dropdown value={options.value} options={statuses} onChange={(e) => options.filterApplyCallback(e.value)} itemTemplate={statusItemTemplate} placeholder="Selecione um status" className="p-column-filter" showClear style={{ minWidth: '12rem' }} />
+        );
+    };
+
     const listarProprietarios = async () => {
         try {
             const response = await proprietarioService.listarTodos();
@@ -203,11 +225,15 @@ export default function CadastroProprietario() {
                     <div className="card">
                         <DataTable value={proprietarios} tableStyle={{ minWidth: '50rem' }}
                             paginator header="Proprietários" rows={5} emptyMessage="Nenhum proprietário encontrado."
-                            key="id">
+                            key="id" filterDisplay="row" globalFilterFields={['nome', 'ativo']} globalFilterMatchMode="startsWith">
                             <Column field="id" header="Código" align="center" alignHeader="center"></Column>
-                            <Column field="nome" body={(rowData) => rowData.nome.toUpperCase()} header="Nome" align="center" alignHeader="center"></Column>
+                            <Column field="nome" body={(rowData) => rowData.nome.toUpperCase()}
+                                filterField="nome" showFilterMenu={false} filterMatchMode="contains" filter filterHeaderStyle={{ width: '25rem' }}
+                                sortable header="Nome" align="center" alignHeader="center"></Column>
                             <Column field="telefone" header="Telefone" align="center" alignHeader="center"></Column>
-                            <Column field="ativo" body={(rowData) => formatarStatusAtivo(rowData, "ativo").toUpperCase()} header="Ativo" align="center" alignHeader="center" />
+                            <Column field="ativo" body={ativoBodyTemplate} header="Ativo" align="center" alignHeader="center"
+                                showFilterMenu={false} filterMenuStyle={{ width: '14rem' }} style={{ minWidth: '12rem' }}
+                                filter filterElement={statusRowFilterTemplate} filterHeaderStyle={{ width: "20rem" }} />
                             <Column body={acoesDataTable} exportable={false} style={{ minWidth: '12rem' }} align="center" header="Ações" alignHeader="center"></Column>
                         </DataTable>
                     </div>
