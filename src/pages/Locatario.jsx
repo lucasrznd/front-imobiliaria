@@ -10,11 +10,11 @@ import { Panel } from 'primereact/panel';
 import { Toolbar } from 'primereact/toolbar';
 import { InputMask } from 'primereact/inputmask';
 import Rodape from "../components/Rodape";
-import { LocatarioModel } from "../models/LocatarioModel";
 import { LocatarioService } from "../services/LocatarioService";
+import { useFormik } from "formik";
+import { msgAviso, msgErro, msgSucesso } from "../util/ToastMessages";
 
 export default function CadastroLocatario() {
-    const [locatario, setLocatario] = useState(new LocatarioModel());
     const [locatarios, setLocatarios] = useState([]);
     const locatarioService = new LocatarioService();
 
@@ -22,6 +22,47 @@ export default function CadastroLocatario() {
     const [buscarVisible, setBuscarVisible] = useState(false);
     const [deleteLocatarioDialog, setDeleteLocatarioDialog] = useState(false);
     const toast = useRef();
+
+    const formik = useFormik({
+        initialValues: {
+            id: undefined,
+            nome: '',
+            telefone: undefined,
+            email: ''
+        },
+        validate: (dados) => {
+            let errors = {};
+
+            if (!dados.nome) {
+                errors.nome = "O campo 'Nome' é obrigatório.";
+            }
+
+            if (!dados.telefone) {
+                errors.telefone = "O campo 'Telefone' é obrigatório.";
+            }
+
+            return errors;
+        },
+        onSubmit: async (values) => {
+            if (values.id === undefined) {
+                await locatarioService.salvar(values);
+                await listarLocatarios();
+                fecharDetalhes();
+                msgSucesso(toast, 'Locatário salvo com sucesso.');
+            } else {
+                await locatarioService.editar(values);
+                await listarLocatarios();
+                msgSucesso(toast, 'Locatário editado com sucesso.');
+                fecharDetalhes();
+            }
+        }
+    });
+
+    const isFormFieldValid = (name) => !!(formik.touched[name] && formik.errors[name]);
+
+    const getFormErrorMessage = (name) => {
+        return isFormFieldValid(name) && <small className="p-error">{formik.errors[name]}</small>;
+    };
 
     const conteudoInicial = (
         <React.Fragment>
@@ -32,12 +73,15 @@ export default function CadastroLocatario() {
     );
 
     function novoLocatarioAction() {
-        setLocatario(new LocatarioModel());
+        formik.setFieldValue('id', undefined);
+        formik.setFieldValue('nome', '');
+        formik.setFieldValue('telefone', undefined);
+        formik.setFieldValue('email', '');
+        formik.resetForm();
         setDetalhesVisible(true);
     }
 
     function buscaLocatarioAction() {
-        setLocatario(new LocatarioModel());
         setBuscarVisible(true);
     }
 
@@ -51,8 +95,12 @@ export default function CadastroLocatario() {
         );
     };
 
-    const detalhesLocatario = (locatario) => {
-        setLocatario({ ...locatario });
+    const detalhesLocatario = (data) => {
+        formik.resetForm();
+        formik.setFieldValue('id', data.id);
+        formik.setFieldValue('nome', data.nome);
+        formik.setFieldValue('telefone', data.telefone);
+        formik.setFieldValue('email', data.email);
         setDetalhesVisible(true);
     };
 
@@ -65,13 +113,13 @@ export default function CadastroLocatario() {
     }
 
     const deletarLocatario = async () => {
-        setDeleteLocatarioDialog(false);
         await excluirLocatario();
         await listarLocatarios();
+        setDeleteLocatarioDialog(false);
     }
 
-    const confirmDeleteLocatario = (locatario) => {
-        setLocatario({ ...locatario });
+    const confirmDeleteLocatario = (rowData) => {
+        formik.setValues(rowData);
         setDeleteLocatarioDialog(true);
     };
 
@@ -86,32 +134,14 @@ export default function CadastroLocatario() {
         </React.Fragment>
     );
 
-    const salvarLocatarioAction = () => {
-        setDetalhesVisible(false);
-        salvarLocatario();
-        msgSucesso('Locatário salvo com sucesso.');
-    }
-
     const buscarLocatarioAction = async () => {
+        formik.resetForm();
         await buscarLocatarioPorId();
-        setBuscarVisible(false);
-    }
-
-    function msgSucesso(msg) {
-        toast.current.show({ severity: 'success', summary: 'Sucesso', detail: msg, life: 3000 });
-    }
-
-    function msgAviso(msg) {
-        toast.current.show({ severity: 'warn', summary: 'Aviso', detail: msg, life: 3000 });
-    }
-
-    function msgErro(msg) {
-        toast.current.show({ severity: 'error', summary: 'Erro', detail: msg, life: 3000 });
     }
 
     const rodapeModal = (
         <div>
-            <Button label="Salvar" icon="pi pi-check" onClick={salvarLocatarioAction} autoFocus />
+            <Button label="Salvar" icon="pi pi-check" onClick={formik.handleSubmit} autoFocus />
             <Button label="Cancelar" icon="pi pi-times" outlined onClick={fecharDetalhes} />
         </div>
     );
@@ -134,29 +164,23 @@ export default function CadastroLocatario() {
 
     const buscarLocatarioPorId = async () => {
         try {
-            const response = await locatarioService.buscarPorId(locatario.id);
-            setLocatarios([response.data]);
-            setLocatario(new LocatarioModel());
+            const response = await locatarioService.buscarPorId(formik.values.id);
+            if (response.data.length !== 0) {
+                setLocatarios([response.data]);
+                msgSucesso(toast, 'Locatário encontrado com sucesso.');
+                setBuscarVisible(false);
+                return;
+            }
+            await listarLocatarios();
+            msgAviso(toast, 'Nenhum locatário encontrado com o Id: ' + formik.values.id);
         } catch (error) {
             msgErro('Erro ao buscar locatário.');
         }
     }
 
-    const salvarLocatario = async () => {
-        if (locatario.id === undefined) {
-            await locatarioService.salvar(locatario);
-            await listarLocatarios();
-            setLocatario(new LocatarioModel());
-        } else {
-            await locatarioService.editar(locatario);
-            await listarLocatarios();
-            setLocatario(new LocatarioModel());
-        }
-    }
-
     const excluirLocatario = async () => {
-        await locatarioService.excluir(locatario.id);
-        msgAviso('Locatário removido com sucesso.');
+        await locatarioService.excluir(formik.values.id);
+        msgSucesso('Locatário removido com sucesso.');
     }
 
     useEffect(() => {
@@ -176,11 +200,13 @@ export default function CadastroLocatario() {
                     <div className="card">
                         <DataTable value={locatarios} tableStyle={{ minWidth: '50rem' }}
                             paginator header="Locatários" rows={5} emptyMessage="Nenhum locatário encontrado."
-                            key="id">
+                            key="id" filterDisplay="row" globalFilterFields={['nome']} globalFilterMatchMode="startsWith">
                             <Column field="id" header="Código" align="center" alignHeader="center"></Column>
-                            <Column field="nome" header="Nome" align="center" alignHeader="center"></Column>
+                            <Column field="nome" header="Nome" body={(rowData) => rowData.nome.toUpperCase()}
+                                filterField="nome" showFilterMenu={false} filterMatchMode="contains" filter
+                                sortable align="center" alignHeader="center"></Column>
                             <Column field="telefone" header="Telefone" align="center" alignHeader="center"></Column>
-                            <Column field="email" header="Email" align="center" alignHeader="center"></Column>
+                            <Column field="email" header="Email" body={(rowData) => rowData.email.toLowerCase()} align="center" alignHeader="center"></Column>
                             <Column body={acoesDataTable} exportable={false} style={{ minWidth: '12rem' }} align="center" header="Ações" alignHeader="center"></Column>
                         </DataTable>
                     </div>
@@ -191,28 +217,36 @@ export default function CadastroLocatario() {
                     <div className="card p-fluid">
                         <div className="field">
                             <label htmlFor='nome' style={{ marginBottom: '0.5rem' }}>Nome:</label>
-                            <InputText id="nome" value={locatario.nome} onChange={(e) => setLocatario({ ...locatario, nome: e.target.value })} />
+                            <InputText id="nome" value={formik.values.nome}
+                                onChange={formik.handleChange}
+                                className={isFormFieldValid('nome') ? "p-invalid uppercase" : "uppercase"} />
+                            {getFormErrorMessage('nome')}
                         </div>
 
                         <div className="field">
                             <label htmlFor='telefone' style={{ marginBottom: '0.5rem' }}>Telefone:</label>
-                            <InputMask id="telefone" value={locatario.telefone} onChange={(e) => setLocatario({ ...locatario, telefone: e.target.value })}
-                                mask="(99) 9 9999-9999" placeholder="(99) 9 9999-9999" />
+                            <InputMask id="telefone" value={formik.values.telefone}
+                                onChange={formik.handleChange}
+                                mask="(99) 9 9999-9999" placeholder="(99) 9 9999-9999"
+                                className={isFormFieldValid('nome') ? "p-invalid uppercase" : "uppercase"} />
+                            {getFormErrorMessage('telefone')}
                         </div>
 
                         <div className="field">
                             <label htmlFor='email' style={{ marginBottom: '0.5rem' }}>Email:</label>
-                            <InputText id="email" value={locatario.email} onChange={(e) => setLocatario({ ...locatario, email: e.target.value })} />
+                            <InputText id="email" value={formik.values.email}
+                                onChange={formik.handleChange} />
                         </div>
                     </div>
                 </Dialog>
 
-                <Dialog header="Buscar Locatário" visible={buscarVisible} style={{ width: '30vw', minWidth: "30vw" }} onHide={() => setDetalhesVisible(false)}
+                <Dialog header="Buscar Locatário" visible={buscarVisible} style={{ width: '30vw', minWidth: "30vw" }} onHide={fecharBusca}
                     footer={rodapeModalBuscar} draggable={false}>
                     <div className="card p-fluid">
                         <div className="field">
                             <label htmlFor='id' style={{ marginBottom: '0.5rem' }}>Código:</label>
-                            <InputText id="id" value={locatario.id} onChange={(e) => setLocatario({ ...locatario, id: e.target.value })} placeholder="Ex: 2a78" />
+                            <InputText id="id" value={formik.values.id}
+                                onChange={formik.handleChange} placeholder="Ex: 1" />
                         </div>
                     </div>
                 </Dialog>
@@ -220,7 +254,7 @@ export default function CadastroLocatario() {
                 <Dialog visible={deleteLocatarioDialog} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Confirmação" modal footer={deleteLocatarioDialogFooter} onHide={hideDeleteLocatarioDialog}>
                     <div className="confirmation-content" style={{ display: "flex", alignItems: "center" }}>
                         <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                        {locatario && (
+                        {(
                             <span>
                                 Deseja realmente excluir o registro?
                             </span>
