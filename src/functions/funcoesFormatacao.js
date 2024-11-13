@@ -11,9 +11,15 @@ export function formatarValorReal(data) {
 }
 
 export function formatarValorRealDatatable(rowData, columnName) {
-    if (rowData && rowData[columnName]) {
-        return 'R$ ' + rowData[columnName] + ',00';
+    const valor = rowData && rowData[columnName];
+
+    // Se o valor for null, undefined ou 0, exibe 'R$ 0,00'
+    if (valor === null || valor === undefined || valor === 0) {
+        return 'R$ 0,00';
     }
+
+    // Caso contrário, formata o valor como uma moeda
+    return 'R$ ' + valor.toFixed(2).replace('.', ',');
 }
 
 export function formatarStatusAtivo(rowData, columnName) {
