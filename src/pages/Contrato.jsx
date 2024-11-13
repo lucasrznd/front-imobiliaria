@@ -62,7 +62,7 @@ export default function CadastroContrato() {
         return (
             <React.Fragment>
                 <Button icon="pi pi-pencil" rounded className="mr-2" onClick={() => detalhesContrato(rowData)} />
-                <span style={{ margin: "15px" }} className="pi pi-ellipsis-v"></span>
+                <span style={{ marginLeft: "3px" }} className="pi pi-ellipsis-v"></span>
                 <Button icon="pi pi-trash" rounded severity="danger" onClick={() => confirmDeleteContrato(rowData)} />
             </React.Fragment>
         );
@@ -199,6 +199,7 @@ export default function CadastroContrato() {
 
     const salvarContrato = async () => {
         if (contrato.id === undefined) {
+            if(contrato.multa == null) contrato.multa = 0;
             await contratoService.salvar(contrato);
             await listarContratos();
             setContrato(new ContratoModel());
@@ -239,7 +240,7 @@ export default function CadastroContrato() {
                             <Column field="imovel.titulo" header="Imóvel" align="center" alignHeader="center"></Column>
                             <Column field="locatario.nome" header="Locatário" align="center" alignHeader="center" />
                             <Column field="dataInicio" header="Data de Início" body={(rowData) => formatarData(rowData, "dataInicio")} align="center" alignHeader="center" />
-                            <Column field="dataTermino" header="Data de Término" body={(rowData) => formatarData(rowData, "dataTermino")} align="center" alignHeader="center" />
+                            <Column field="dataTermino" header="Data de Término" body={(rowData) => formatarData(rowData, "dataFim")} align="center" alignHeader="center" />
                             <Column field="valorMensal" header="Valor Mensal" body={(rowData) => formatarValorRealDatatable(rowData, "valorMensal")} align="center" alignHeader="center" />
                             <Column field="multa" header="Multa" body={(rowData) => formatarValorRealDatatable(rowData, "multa")} align="center" alignHeader="center" />
                             <Column field="status" header="Ativo" body={(rowData) => formatarStatusAtivo(rowData, "status")} align="center" alignHeader="center" />
@@ -265,22 +266,22 @@ export default function CadastroContrato() {
                         <div className="formgrid grid">
                             <div className="field col">
                                 <label htmlFor='dataInicio' style={{ marginBottom: '0.5rem' }}>Data de Ínicio:</label>
-                                <Calendar inputId="dataInicio" value={new Date(contrato?.dataInicio)} onChange={(e) => setContrato({ ...contrato, dataInicio: e.target.value })} showIcon dateFormat="dd/mm/yy" />
+                                <Calendar inputId="dataInicio" value={new Date(contrato?.dataInicio)} onChange={(e) => setContrato({ ...contrato, dataInicio: e.value })} showIcon dateFormat="dd/mm/yy" />
                             </div>
                             <div className="field col">
-                                <label htmlFor='dataTermino' style={{ marginBottom: '0.5rem' }}>Data de Término:</label>
-                                <Calendar id="dataTermino" value={new Date(contrato?.dataTermino)} onChange={(e) => setContrato({ ...contrato, dataTermino: e.target.value })} showIcon dateFormat="dd/mm/yy" />
+                                <label htmlFor='dataFim' style={{ marginBottom: '0.5rem' }}>Data de Término:</label>
+                                <Calendar id="dataFim" value={new Date(contrato?.dataFim)} onChange={(e) => setContrato({ ...contrato, dataFim: e.value })} showIcon dateFormat="dd/mm/yy" />
                             </div>
                         </div>
 
                         <div className="formgrid grid">
                             <div className="field col">
                                 <label htmlFor='valorMensal' style={{ marginBottom: '0.5rem' }}>Valor Mensal:</label>
-                                <InputNumber id="valorMensal" value={contrato.valorMensal} onValueChange={(e) => setContrato({ ...contrato, valorMensal: e.target.value })} mode="currency" currency="BRL" locale="pt-BR" placeholder="R$ 1.000,00" />
+                                <InputNumber id="valorMensal" value={contrato.valorMensal} onChange={(e) => setContrato({ ...contrato, valorMensal: e.value }) } mode="currency" currency="BRL" locale="pt-BR" placeholder="R$ 0,00" />
                             </div>
                             <div className="field col">
                                 <label htmlFor='multa' style={{ marginBottom: '0.5rem' }}>Multa:</label>
-                                <InputNumber id="multa" value={contrato.multa} onValueChange={(e) => setContrato({ ...contrato, multa: e.target.value })} mode="currency" currency="BRL" locale="pt-BR" placeholder="R$ 1.000,00" />
+                                <InputNumber id="multa" value={contrato.multa} onChange={(e) => setContrato({ ...contrato, multa: e.value })} mode="currency" currency="BRL" locale="pt-BR" placeholder="R$ 0,00" />
                             </div>
                         </div>
                         <div className="field">
