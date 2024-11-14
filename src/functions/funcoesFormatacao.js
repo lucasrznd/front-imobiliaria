@@ -30,3 +30,18 @@ export function formatarStatusAtivo(rowData, columnName) {
     }
     return 'Não';
 }
+
+export function parseDate(date) {
+    const [year, month, day] = date.split('-').map(Number);
+
+    return new Date(year, month - 1, day);
+}
+
+export function dateFormatDt(rowData, columnName) {
+    if (rowData && rowData[columnName]) {
+        const [year, month, day] = rowData[columnName].split('-').map(Number);
+        const data = new Date(year, month - 1, day);
+        return data.toLocaleDateString('pt-BR');
+    }
+    return '';
+}
