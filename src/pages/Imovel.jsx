@@ -21,6 +21,7 @@ import { msgAviso, msgErro, msgSucesso } from "../util/ToastMessages";
 import { Tag } from "primereact/tag";
 import { Dropdown } from "primereact/dropdown";
 import { formatarValorRealDatatable } from "../functions/funcoesFormatacao";
+import { FilterMatchMode } from "primereact/api";
 
 export default function CadastroImovel() {
     const [imoveis, setImoveis] = useState([]);
@@ -32,6 +33,15 @@ export default function CadastroImovel() {
     const [detalhesVisible, setDetalhesVisible] = useState(false);
     const [buscarVisible, setBuscarVisible] = useState(false);
     const [deleteImovelDialog, setDeleteImovelDialog] = useState(false);
+    const [globalFilterValue, setGlobalFilterValue] = useState('');
+    const [filters, setFilters] = useState({
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+        'proprietario.nome': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+        representative: { value: null, matchMode: FilterMatchMode.IN },
+        status: { value: null, matchMode: FilterMatchMode.EQUALS },
+        verified: { value: null, matchMode: FilterMatchMode.EQUALS }
+    });
     const [statuses] = useState(['true', 'false']);
     const toast = useRef();
 
@@ -262,6 +272,26 @@ export default function CadastroImovel() {
         );
     };
 
+    const onGlobalFilterChange = (e) => {
+        const value = e.target.value;
+        let _filters = { ...filters };
+
+        _filters['global'].value = value;
+
+        setFilters(_filters);
+        setGlobalFilterValue(value);
+    };
+
+    const renderHeader = () => {
+        return (
+            <div className="flex justify-content-end">
+                <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Busca rápida" />
+            </div>
+        );
+    };
+
+    const header = renderHeader();
+
     const listarProprietarios = async () => {
         try {
             const response = await proprietarioService.listarTodos();
@@ -327,13 +357,11 @@ export default function CadastroImovel() {
 
                     <div className="card">
                         <DataTable value={imoveis} tableStyle={{ minWidth: '50rem' }}
-                            paginator header="Imóvel" rows={5} emptyMessage="Nenhum imóvel encontrado."
-                            key="id" filterDisplay="row" globalFilterFields={['titulo', 'proprietario.nome']} globalFilterMatchMode="startsWith">
-                            <Column field="titulo" header="Título" body={(rowData) => rowData.titulo.toUpperCase()} filterField="titulo" showFilterMenu={false}
-                                filterMatchMode="contains" filter filterHeaderStyle={{ width: "15rem" }}
+                            paginator header={header} rows={5} emptyMessage="Nenhum imóvel encontrado." filters={filters}
+                            key="id" filterDisplay="row" globalFilterFields={['titulo', 'proprietario.nome', 'endereco.rua', 'valorTotal', 'status']} globalFilterMatchMode="startsWith">
+                            <Column field="titulo" header="Título" body={(rowData) => rowData.titulo.toUpperCase()} filterField="titulo"
                                 align="center" alignHeader="center" />
-                            <Column field="proprietario.nome" header="Proprietário" body={(rowData) => rowData.proprietario.nome.toUpperCase()} filterField="proprietario.nome" showFilterMenu={false}
-                                filterMatchMode="contains" filter filterHeaderStyle={{ width: "15rem" }} filterHeaderClassName="center-filter"
+                            <Column field="proprietario.nome" header="Proprietário" body={(rowData) => rowData.proprietario.nome.toUpperCase()}
                                 align="center" alignHeader="center" />
                             <Column field="endereco" header="Endereço" body={enderecoBodyTemplate} align="center" alignHeader="center" />
                             <Column field="valorTotal" body={valorTotalBodyTemplate} header="Valor Total" align="center" alignHeader="center" bodyStyle={{ width: "10rem" }} />
