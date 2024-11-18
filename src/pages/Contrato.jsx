@@ -25,6 +25,7 @@ import { useFormik } from "formik";
 import { Tag } from "primereact/tag";
 import { FilterMatchMode } from "primereact/api";
 import { Dropdown } from "primereact/dropdown";
+import { localePtBr } from "../util/locale";
 
 export default function CadastroContrato() {
     const [contrato, setContrato] = useState(new ContratoModel());
@@ -411,7 +412,7 @@ export default function CadastroContrato() {
                                 <label htmlFor='dataInicio' style={{ marginBottom: '0.5rem' }}>Data de Ínicio:</label>
                                 <Calendar inputId="dataInicio" value={formik.values.dataInicio}
                                     onChange={(e) => formik.setFieldValue('dataInicio', new Date(e.value))}
-                                    showIcon dateFormat="dd/mm/yy"
+                                    showIcon dateFormat="dd/mm/yy" locale="pt-BR"
                                     className={isFormFieldValid('dataInicio') ? "p-invalid uppercase" : "uppercase"} />
                                 {getFormErrorMessage('dataInicio')}
                             </div>
@@ -419,7 +420,7 @@ export default function CadastroContrato() {
                                 <label htmlFor='dataFim' style={{ marginBottom: '0.5rem' }}>Data de Término:</label>
                                 <Calendar id="dataFim" value={formik.values.dataTermino}
                                     onChange={(e) => formik.setFieldValue('dataTermino', new Date(e.value))}
-                                    showIcon dateFormat="dd/mm/yy"
+                                    showIcon dateFormat="dd/mm/yy" locale="pt-BR"
                                     className={isFormFieldValid('dataTermino') ? "p-invalid uppercase" : "uppercase"} />
                                 {getFormErrorMessage('dataTermino')}
                             </div>
