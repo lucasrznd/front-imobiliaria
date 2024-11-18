@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react"
-import { ParcelaModel } from "../models/ParcelaModel"
 import MenuApp from "../components/Menu";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
@@ -13,14 +12,17 @@ import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
 import { Checkbox } from "primereact/checkbox";
 import { Calendar } from "primereact/calendar";
-import { addLocale } from "primereact/api";
 import { ParcelaService } from "../services/ParcelaService";
-import { formatarData, formatarValorRealDatatable, formatarValorReal, formatarStatusAtivo } from "../functions/funcoesFormatacao";
+import { formatarData, formatarValorRealDatatable, formatarValorReal, parseDate } from "../functions/funcoesFormatacao";
 import { ContratoService } from "../services/ContratoService";
 import { AutoComplete } from "primereact/autocomplete";
+import { localePtBr } from "../util/locale";
+import { Tag } from "primereact/tag";
+import { useFormik } from "formik";
+import { msgErro, msgSucesso } from "../util/ToastMessages";
+import { FilterMatchMode } from "primereact/api";
 
 export default function CadastroParcela() {
-    const [parcela, setParcela] = useState(new ParcelaModel());
     const [parcelas, setParcelas] = useState([]);
     const parcelaService = new ParcelaService();
 
@@ -31,19 +33,76 @@ export default function CadastroParcela() {
     const [detalhesVisible, setDetalhesVisible] = useState(false);
     const [buscarVisible, setBuscarVisible] = useState(false);
     const [deleteParcelaDialog, setDeleteParcelaDialog] = useState(false);
+    const [globalFilterValue, setGlobalFilterValue] = useState('');
+    const [filters, setFilters] = useState({
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+        'nomeProprietario': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+        representative: { value: null, matchMode: FilterMatchMode.IN },
+        status: { value: null, matchMode: FilterMatchMode.EQUALS },
+        verified: { value: null, matchMode: FilterMatchMode.EQUALS }
+    });
     const toast = useRef();
 
-    addLocale('pt-BR', {
-        firstDayOfWeek: 1,
-        showMonthAfterYear: true,
-        dayNames: ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'],
-        dayNamesShort: ['dom', 'seg', 'ter', 'quar', 'qui', 'sex', 'sab'],
-        dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
-        monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-        monthNamesShort: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
-        today: 'Hoje',
-        clear: 'Limpar'
+    const formik = useFormik({
+        initialValues: {
+            id: undefined,
+            contrato: {
+                id: undefined,
+                imovel: {
+                    titulo: ''
+                },
+            },
+            valorParcela: undefined,
+            dataInicio: undefined,
+            dataVencimento: undefined,
+            ativa: true
+        },
+        validate: (dados) => {
+            let errors = {};
+
+            if (!dados.contrato.titulo) {
+                errors.contrato = "O campo 'Contrato' é obrigatório.";
+            }
+
+            if (!dados.valorParcela) {
+                errors.valorParcela = "O campo 'Valor Parcela' é obrigatório.";
+            }
+
+            if (!dados.dataInicio) {
+                errors.dataInicio = "O campo 'Data de Início' é obrigatório.";
+            }
+
+            if (!dados.dataVencimento) {
+                errors.dataVencimento = "O campo 'Data de Vencimento' é obrigatório.";
+            }
+
+            if (!dados.ativa) {
+                errors.ativa = "O campo 'Ativa' é obrigatório.";
+            }
+
+            return errors;
+        },
+        onSubmit: async (values) => {
+            if (values.id === undefined) {
+                await parcelaService.salvar(values);
+                await listarParcelas();
+                fecharDetalhes();
+                msgSucesso(toast, 'Parcela salva com sucesso.');
+            } else {
+                await parcelaService.editar(values);
+                await listarParcelas();
+                fecharDetalhes();
+                msgSucesso(toast, 'Parcela editada com sucesso.');
+            }
+        }
     });
+
+    const isFormFieldValid = (name) => !!(formik.touched[name] && formik.errors[name]);
+
+    const getFormErrorMessage = (name) => {
+        return isFormFieldValid(name) && <small className="p-error">{formik.errors[name]}</small>;
+    };
 
     const conteudoInicial = (
         <React.Fragment>
@@ -54,12 +113,17 @@ export default function CadastroParcela() {
     );
 
     function novaParcelaAction() {
-        setParcela(new ParcelaModel());
+        formik.setFieldValue('id', undefined);
+        formik.setFieldValue('contrato', {});
+        formik.setFieldValue('valorParcela', undefined);
+        formik.setFieldValue('dataInicio', undefined);
+        formik.setFieldValue('dataVencimento', undefined);
+        formik.setFieldValue('ativa', true);
+        formik.resetForm();
         setDetalhesVisible(true);
     }
 
     function buscaParcelaAction() {
-        setParcela(new ParcelaModel());
         setBuscarVisible(true);
     }
 
@@ -67,17 +131,20 @@ export default function CadastroParcela() {
         return (
             <React.Fragment>
                 <Button icon="pi pi-pencil" rounded className="mr-2" onClick={() => detalhesParcela(rowData)} />
-                <span style={{ margin: "15px" }} className="pi pi-ellipsis-v"></span>
-                <Button icon="pi pi-trash" rounded severity="danger" onClick={() => confirmDeleteParcela(rowData)} />
+                <span className="pi pi-ellipsis-v mb-3" />
+                <Button icon="pi pi-trash" rounded className="ml-2" severity="danger" onClick={() => confirmDeleteParcela(rowData)} />
             </React.Fragment>
         );
     };
 
-    const detalhesParcela = (parcela) => {
-        console.log(parcela);
-        setParcela({ ...parcela });
-        setParcela({...parcela, dataInicio: new Date(parcela.dataInicio)});
-        setParcela({...parcela, dataVencimento: new Date(parcela.dataVencimento)});
+    const detalhesParcela = async (data) => {
+        formik.resetForm();
+        formik.setFieldValue('id', data.id);
+        formik.setFieldValue('contrato', await getContratoById(data));
+        formik.setFieldValue('valorParcela', data.valorParcela);
+        formik.setFieldValue('dataInicio', parseDate(data.dataInicio));
+        formik.setFieldValue('dataVencimento', parseDate(data.dataVencimento));
+        formik.setFieldValue('ativa', data.ativa);
         setDetalhesVisible(true);
     }
 
@@ -95,8 +162,8 @@ export default function CadastroParcela() {
         setDeleteParcelaDialog(false);
     }
 
-    const confirmDeleteParcela = (parcela) => {
-        setParcela({ ...parcela });
+    const confirmDeleteParcela = (rowData) => {
+        formik.setValues(rowData);
         setDeleteParcelaDialog(true);
     }
 
@@ -111,32 +178,14 @@ export default function CadastroParcela() {
         </React.Fragment>
     );
 
-    const salvarParcelaAction = async () => {
-        await salvarParcela();
-        setDetalhesVisible(false);
-        msgSucesso('Parcela cadastrada com sucesso.');
-    }
-
     const buscarParcelaAction = async () => {
         await buscarParcelaPorId();
         setBuscarVisible(false);
     }
 
-    function msgSucesso(msg) {
-        toast.current.show({ severity: 'success', summary: 'Sucesso', detail: msg, life: 3000 });
-    }
-
-    function msgAviso(msg) {
-        toast.current.show({ severity: 'warn', summary: 'Aviso', detail: msg, life: 3000 });
-    }
-
-    function msgErro(msg) {
-        toast.current.show({ severity: 'error', summary: 'Erro', detail: msg, life: 3000 });
-    }
-
     const rodapeModal = (
         <div>
-            <Button label="Salvar" icon="pi pi-check" onClick={salvarParcelaAction} autoFocus />
+            <Button label="Salvar" icon="pi pi-check" type="submit" onClick={formik.handleSubmit} autoFocus />
             <Button label="Cancelar" icon="pi pi-times" outlined onClick={fecharDetalhes} />
         </div>
     );
@@ -146,14 +195,70 @@ export default function CadastroParcela() {
             <Button label="Buscar" icon="pi pi-check" onClick={buscarParcelaAction} autoFocus />
             <Button label="Cancelar" icon="pi pi-times" outlined onClick={fecharBusca} />
         </div>
-    )
+    );
+
+    const contratoItemTemplate = (item) => {
+        return (
+            <>
+                <div>Código: {item.id}</div>
+                <div>Imóvel: {item.imovel.titulo.toUpperCase()}</div>
+                <div>Locatário: {item.locatario.nome.toUpperCase()}</div>
+                <div>Valor Mensal: {formatarValorReal(item.valorMensal)}</div>
+            </>
+        );
+    };
+
+    const imovelBodyTemplate = (rowData) => {
+        const imovel = rowData.tituloImovel + ' | ' + rowData.enderecoCompleto;
+        return <span>{imovel.toUpperCase()}</span>
+    }
+
+    const valorParcelaBodyTemplate = (rowData) => {
+        return <span className="font-bold">{formatarValorRealDatatable(rowData, 'valorParcela')}</span>
+    }
+
+    const ativaBodyTemplate = (rowData) => {
+        if (rowData.ativa) {
+            return <Tag value="SIM" severity="success" />
+        }
+        return <Tag value="NÃO" severity="danger" />
+    }
+
+    const onGlobalFilterChange = (e) => {
+        const value = e.target.value;
+        let _filters = { ...filters };
+
+        _filters['global'].value = value;
+
+        setFilters(_filters);
+        setGlobalFilterValue(value);
+    };
+
+    const renderHeader = () => {
+        return (
+            <div className="flex justify-content-end">
+                <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Busca rápida" />
+            </div>
+        );
+    };
+
+    const header = renderHeader();
+
+    const getContratoById = async (rowData) => {
+        try {
+            const response = await contratoService.buscarPorId(rowData.idContrato);
+            return response.data;
+        } catch (error) {
+            msgErro(toast, 'Erro ao encontrar contrado')
+        }
+    }
 
     const listarContratos = async () => {
         try {
             const response = await contratoService.listarTodos();
             setContratos(response.data);
         } catch (error) {
-            msgErro('Erro ao carregar contratos');
+            msgErro(toast, 'Erro ao carregar contratos');
         }
     }
 
@@ -170,35 +275,22 @@ export default function CadastroParcela() {
             const response = await parcelaService.listarTodos();
             setParcelas(response.data);
         } catch (error) {
-            msgErro('Erro ao carregar parcelas');
+            msgErro(toast, 'Erro ao carregar parcelas');
         }
     }
 
     const buscarParcelaPorId = async () => {
         try {
-            const response = await parcelaService.buscarPorId(parcela.id);
+            const response = await parcelaService.buscarPorId(formik.values.id);
             setParcelas([response.data]);
-            setParcela(new ParcelaModel());
         } catch (error) {
-            msgErro('Erro ao buscar parcela.');
-        }
-    }
-
-    const salvarParcela = async () => {
-        if (parcela.id === undefined) {
-            await parcelaService.salvar(parcela);
-            await listarParcelas();
-            setParcela(new ParcelaModel());
-        } else {
-            await parcelaService.editar(parcela);
-            await listarParcelas();
-            setParcela(new ParcelaModel());
+            msgErro(toast, 'Erro ao buscar parcela.');
         }
     }
 
     const excluirParcela = async () => {
-        await parcelaService.excluir(parcela.id);
-        msgAviso('Parcela removida com sucesso.');
+        await parcelaService.excluir(formik.values.id);
+        msgSucesso(toast, 'Parcela removida com sucesso.');
     }
 
     useEffect(() => {
@@ -206,16 +298,6 @@ export default function CadastroParcela() {
         listarContratos();
         // eslint-disable-next-line
     }, []);
-
-    const customItemTemplate = (item) => {
-        return (
-            <>
-                <div>Imóvel: {item.imovel.titulo}</div>
-                <div>Locatário: {item.locatario.nome}</div>
-                <div>Valor Mensal: {formatarValorReal(item.valorMensal)}</div>
-            </>
-        );
-    };
 
     return (
         <div>
@@ -229,14 +311,16 @@ export default function CadastroParcela() {
 
                     <div className="card">
                         <DataTable value={parcelas} tableStyle={{ minWidth: '50rem' }}
-                            paginator header="Parcelas" rows={5} emptyMessage="Nenhuma parcela encontrada."
-                            key="id">
-                            <Column field="id" header="Código" align="center" alignHeader="center"></Column>
-                            <Column field="contrato.imovel.titulo" header="Contrato" align="center" alignHeader="center"></Column>
-                            <Column field="valorParcela" body={(rowData) => formatarValorRealDatatable(rowData, "valorParcela")} header="Valor Parcela" align="center" alignHeader="center"></Column>
+                            paginator header={header} rows={5} emptyMessage="Nenhuma parcela encontrada." filters={filters}
+                            key="id" filterDisplay="row" globalFilterFields={['idContrato', 'enderecoCompleto', 'nomeProprietario', 'valorParcela', 'locatario.nome', 'dataInicio', 'dataVencimento']}
+                            globalFilterMatchMode="startsWith">
+                            <Column field="idContrato" header="Cód. Contrato" align="center" alignHeader="center" />
+                            <Column field="enderecoCompleto" body={imovelBodyTemplate} header="Imóvel" align="center" alignHeader="center" />
+                            <Column field="nomeProprietario" body={(rowData) => rowData.nomeProprietario.toUpperCase()} header="Proprietário" align="center" alignHeader="center" />
+                            <Column field="valorParcela" body={valorParcelaBodyTemplate} header="Valor Parcela" align="center" alignHeader="center"></Column>
                             <Column field="dataInicio" header="Data de Início" body={(rowData) => formatarData(rowData, "dataInicio")} align="center" alignHeader="center"></Column>
                             <Column field="dataVencimento" header="Data de Vencimento" body={(rowData) => formatarData(rowData, "dataVencimento")} align="center" alignHeader="center"></Column>
-                            <Column field="ativa" body={(rowData) => formatarStatusAtivo(rowData, "ativa")} header="Ativa" align="center" alignHeader="center" />
+                            <Column field="ativa" body={ativaBodyTemplate} header="Ativa" align="center" alignHeader="center" />
                             <Column body={acoesDataTable} exportable={false} style={{ minWidth: '12rem' }} align="center" header="Ações" alignHeader="center"></Column>
                         </DataTable>
                     </div>
@@ -247,24 +331,48 @@ export default function CadastroParcela() {
                     <div className="card p-fluid">
                         <div className="field">
                             <label htmlFor='contrato' style={{ marginBottom: '0.5rem' }}>Contrato:</label>
-                            <AutoComplete id="contrato" value={parcela.contrato} suggestions={contratosFiltrados} field="imovel.titulo" itemTemplate={customItemTemplate} completeMethod={completeMethodImoveis} onChange={(e) => setParcela({ ...parcela, contrato: e.target.value })} />
+                            <AutoComplete id="contrato" value={formik.values.contrato} suggestions={contratosFiltrados}
+                                field="imovel.titulo" itemTemplate={contratoItemTemplate}
+                                completeMethod={completeMethodImoveis}
+                                onChange={(e) => formik.setFieldValue('contrato', e.value)}
+                                className={isFormFieldValid('contrato') ? "p-invalid uppercase" : "uppercase"} />
+                            {getFormErrorMessage('contrato')}
                         </div>
+
                         <div className="field">
                             <label htmlFor='valorParcela' style={{ marginBottom: '0.5rem' }}>Valor Parcela:</label>
-                            <InputNumber id="valorParcela" value={parcela.valorParcela} onValueChange={(e) => setParcela({ ...parcela, valorParcela: e.target.value })} mode="currency" currency="BRL" locale="pt-BR" placeholder="R$ 2.000,00" />
+                            <InputNumber id="valorParcela" value={formik.values.valorParcela}
+                                onValueChange={formik.handleChange}
+                                mode="currency" currency="BRL" locale="pt-BR"
+                                placeholder="R$ 2.000,00"
+                                className={isFormFieldValid('valorParcela') ? "p-invalid uppercase" : "uppercase"} />
+                            {getFormErrorMessage('valorParcela')}
                         </div>
+
                         <div className="field">
                             <label htmlFor='dataInicio' style={{ marginBottom: '0.5rem' }}>Data de Início:</label>
-                            <Calendar id="dataInicio" value={parcela.dataInicio} onChange={(e) => setParcela({ ...parcela, dataInicio: new Date(e.value) })} showIcon dateFormat="dd/mm/yy" locale="pt-BR" />
+                            <Calendar id="dataInicio" value={formik.values.dataInicio}
+                                onChange={(e) => formik.setFieldValue('dataInicio', new Date(e.value))}
+                                showIcon dateFormat="dd/mm/yy" locale="pt-BR"
+                                className={isFormFieldValid('dataInicio') ? "p-invalid uppercase" : "uppercase"} />
+                            {getFormErrorMessage('dataInicio')}
                         </div>
+
                         <div className="field">
                             <label htmlFor='dataVencimento' style={{ marginBottom: '0.5rem' }}>Data de Vencimento:</label>
-                            <Calendar id="dataVencimento" value={parcela.dataVencimento} onChange={(e) => setParcela({ ...parcela, dataVencimento: new Date(e.value) })} showIcon dateFormat="dd/mm/yy" locale="pt-BR" />
+                            <Calendar id="dataVencimento" value={formik.values.dataVencimento}
+                                onChange={(e) => formik.setFieldValue('dataVencimento', new Date(e.value))}
+                                showIcon dateFormat="dd/mm/yy" locale="pt-BR"
+                                className={isFormFieldValid('dataVencimento') ? "p-invalid uppercase" : "uppercase"} />
+                            {getFormErrorMessage('dataVencimento')}
                         </div>
+
                         <div className="field">
                             <div className="flex align-items-center justify-content-center">
-                                <label htmlFor='ativa' style={{ marginBottom: '0.5rem' }}>Ativa:</label>
-                                <Checkbox id="ativa" onChange={(e) => setParcela({ ...parcela, ativa: e.checked })} checked={parcela.ativa} className="ml-1" />
+                                <label htmlFor='ativa'>Ativa:</label>
+                                <Checkbox id="ativa" onChange={formik.handleChange}
+                                    className="ml-1"
+                                    checked={formik.values.ativa} />
                             </div>
                         </div>
                     </div>
@@ -275,7 +383,7 @@ export default function CadastroParcela() {
                     <div className="card p-fluid">
                         <div className="field">
                             <label htmlFor="id" style={{ marginBottom: '0.5rem' }}>Código:</label>
-                            <InputText id="id" value={parcela.id} onChange={(e) => setParcela({ ...parcela, id: e.target.value })} />
+                            <InputText id="id" value={formik.values.id} onChange={formik.handleChange} />
                         </div>
                     </div>
                 </Dialog>
@@ -283,7 +391,7 @@ export default function CadastroParcela() {
                 <Dialog visible={deleteParcelaDialog} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Confirmação" modal footer={deleteParcelaDialogFooter} onHide={hideDeleteParcelaDialog}>
                     <div className="confirmation-content" style={{ display: "flex", alignItems: "center" }}>
                         <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                        {parcela && (
+                        {(
                             <span>
                                 Deseja realmente excluir o registro?
                             </span>
